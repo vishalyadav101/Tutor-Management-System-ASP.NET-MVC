@@ -1,0 +1,163 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Register";
+    string preRole = Request.QueryString["role"] ?? "student";
+}
+
+<section style="background:var(--light);min-height:90vh;display:flex;align-items:center;padding:60px 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="text-center mb-4">
+                    <a href="/" style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--primary);">Tuition<span style="color:var(--accent)">Hub</span></a>
+                    <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin-top:20px;">Join TuitionHub 🎓</h4>
+                    <p style="color:var(--muted);font-size:0.9rem;">Free mein register karein — 2 minutes lagenge</p>
+                </div>
+                <div class="form-section">
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger mb-3">❌ @ViewBag.Error</div>
+                    }
+
+                    <div class="mb-4">
+                        <label class="form-label">Aap kya hain? *</label>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="role-card @(preRole=="student"?"selected":"")" id="roleStudent" onclick="selectRole('Student')">
+                                    <div class="role-icon">👨‍🎓</div>
+                                    <h5>Student</h5>
+                                    <p style="font-size:0.8rem;color:var(--muted);margin:4px 0 0;">Tutor dhundne ke liye</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="role-card @(preRole=="tutor"?"selected":"")" id="roleTutor" onclick="selectRole('Tutor')">
+                                    <div class="role-icon">👨‍🏫</div>
+                                    <h5>Tutor</h5>
+                                    <p style="font-size:0.8rem;color:var(--muted);margin:4px 0 0;">Students padhane ke liye</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Role" id="selectedRole" value="@(preRole=="tutor"?"Tutor":"Student")">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Pura Naam *</label>
+                                <input type="text" name="FullName" class="form-control" placeholder="Aapka pura naam" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number *</label>
+                                <input type="tel" name="Phone" class="form-control" placeholder="+91 XXXXX XXXXX" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" name="Email" class="form-control" placeholder="aapka@email.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City *</label>
+                                <input type="text" name="City" class="form-control" placeholder="Aapki city" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Gender *</label>
+                                <select name="Gender" class="form-select" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div id="tutorFields" style="display:@(preRole=="tutor"?"block":"none");">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Qualification</label>
+                                        <select name="Qualification" class="form-select">
+                                            <option value="">Select</option>
+                                            <option>B.Sc</option>
+                                            <option>B.Tech</option>
+                                            <option>B.Ed</option>
+                                            <option>M.Sc</option>
+                                            <option>M.Tech</option>
+                                            <option>MA</option>
+                                            <option>PhD</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Experience (Years)</label>
+                                        <input type="number" name="Experience" class="form-control" placeholder="e.g. 3" min="0" max="50">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Subjects *</label>
+                                        <input type="text" name="Subjects" class="form-control" placeholder="e.g. Maths, Physics, Chemistry">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">About (Short Bio)</label>
+                                        <textarea name="Bio" class="form-control" rows="3" placeholder="Apne aap ke baare mein batao..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="studentFields" style="display:@(preRole=="tutor"?"none":"block");">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Class / Standard</label>
+                                        <select name="Class" class="form-select">
+                                            <option value="">Select Class</option>
+                                            @for (int i = 1; i <= 12; i++)
+                                            {
+                                                <option value="@i">Class @i</option>
+}
+                                            <option value="College">College</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Required Subject</label>
+                                        <input type="text" name="RequiredSubject" class="form-control" placeholder="e.g. Maths">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Password *</label>
+                                <input type="password" name="Password" class="form-control" placeholder="Strong password" required minlength="6">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Confirm Password *</label>
+                                <input type="password" name="ConfirmPassword" class="form-control" placeholder="Password dobara dalein" required>
+                            </div>
+                            <div class="col-12">
+                                <label style="font-size:0.88rem;cursor:pointer;display:flex;align-items:flex-start;gap:8px;">
+                                    <input type="checkbox" name="AgreeTerms" required style="margin-top:3px;">
+                                    <span>Main TuitionHub ke <a href="#" style="color:var(--accent);">Terms & Conditions</a> se agree karta/karti hoon.</span>
+                                </label>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn-primary-custom w-100" style="justify-content:center;">
+                                    <i class="fa fa-user-plus"></i> Account Banao
+                                </button>
+                            </div>
+                        </div>
+                    }
+                    <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+                        <p style="color:var(--muted);font-size:0.9rem;">Pehle se account hai? <a href="/Account/Login" style="color:var(--accent);font-weight:600;">Login Karein</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+function selectRole(role) {
+    document.getElementById('selectedRole').value = role;
+    document.getElementById('roleStudent').classList.toggle('selected', role === 'Student');
+    document.getElementById('roleTutor').classList.toggle('selected', role === 'Tutor');
+    document.getElementById('tutorFields').style.display = role === 'Tutor' ? 'block' : 'none';
+    document.getElementById('studentFields').style.display = role === 'Student' ? 'block' : 'none';
+}
+    </script>
+}

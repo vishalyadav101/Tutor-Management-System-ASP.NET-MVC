@@ -1,0 +1,171 @@
+ @using TuitionHub.Models
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Complaints & Messages";
+    ViewData["Active"] = "Complaints";
+
+    var msgs             = ViewBag.Messages as List<TuitionHub.Models.AdminMessage>;
+    int pendingCount     = ViewBag.PendingCount  != null ? (int)ViewBag.PendingCount  : 0;
+    int resolvedCount    = ViewBag.ResolvedCount != null ? (int)ViewBag.ResolvedCount : 0;
+}
+
+<div class="row g-4">
+    <div class="col-12">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <div>
+                <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin:0;">
+                    Complaints &amp; Messages
+                </h4>
+                <p style="color:var(--muted);font-size:0.85rem;margin:0;">
+                    Students aur Tutors ke messages
+                </p>
+            </div>
+            <div class="d-flex gap-2">
+                <span class="badge-status badge-pending"
+                      style="font-size:0.85rem;padding:8px 14px;">
+                    <i class="fa fa-exclamation-triangle me-1"></i>
+                    @pendingCount Pending
+                </span>
+                <span class="badge-status badge-active"
+                      style="font-size:0.85rem;padding:8px 14px;">
+                    <i class="fa fa-check me-1"></i>
+                    @resolvedCount Resolved
+                </span>
+            </div>
+        </div>
+    </div>
+
+    @* Filter Tabs *@
+    <div class="col-12">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a href="/Admin/Complaints"
+               class="btn-action @(Request.QueryString["type"]==null && Request.QueryString["status"]==null ? "btn-hire":"btn-view")"
+               style="padding:10px 20px;">
+                Sab
+            </a>
+            <a href="/Admin/Complaints?type=Complaint"
+               class="btn-action @(Request.QueryString["type"]=="Complaint"?"btn-hire":"btn-view")"
+               style="padding:10px 20px;">
+                <i class="fa fa-exclamation-triangle me-1"></i> Complaints
+            </a>
+            <a href="/Admin/Complaints?type=Feedback"
+               class="btn-action @(Request.QueryString["type"]=="Feedback"?"btn-hire":"btn-view")"
+               style="padding:10px 20px;">
+                <i class="fa fa-comment me-1"></i> Feedback
+            </a>
+            <a href="/Admin/Complaints?type=Suggestion"
+               class="btn-action @(Request.QueryString["type"]=="Suggestion"?"btn-hire":"btn-view")"
+               style="padding:10px 20px;">
+                <i class="fa fa-lightbulb me-1"></i> Suggestions
+            </a>
+            <a href="/Admin/Complaints?status=Pending"
+               class="btn-action @(Request.QueryString["status"]=="Pending"?"btn-hire":"btn-view")"
+               style="padding:10px 20px;">
+                <i class="fa fa-clock me-1"></i> Pending
+            </a>
+        </div>
+    </div>
+
+    @* Messages List *@
+    <div class="col-12">
+        @if (msgs != null && msgs.Count > 0)
+        {
+            for (int i = 0; i < msgs.Count; i++)
+            {
+                var msg = msgs[i];
+
+                string reasonColor = msg.Reason == "Complaint"
+                    ? "background:rgba(231,76,60,0.1);color:#c0392b;"
+                    : msg.Reason == "Feedback"
+                    ? "background:rgba(46,204,113,0.1);color:#27ae60;"
+                    : "background:rgba(155,89,182,0.1);color:#9b59b6;";
+
+                string priorityColor = msg.Priority == "High"
+                    ? "color:#c0392b;"
+                    : msg.Priority == "Medium"
+                    ? "color:#d48000;"
+                    : "color:#27ae60;";
+
+                string senderInitial = !string.IsNullOrEmpty(msg.SenderName)
+                    ? msg.SenderName.Substring(0, 1).ToUpper()
+                    : "?";
+
+                <div class="card-tuition mb-3"
+                     style="padding:20px 24px;border-radius:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:10px;">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div class="sidebar-avatar"
+                                 style="width:38px;height:38px;font-size:0.8rem;">
+                                @senderInitial
+                            </div>
+                            <div>
+                                <strong style="font-size:0.92rem;color:var(--primary);">
+                                    @msg.SenderName
+                                </strong>
+                                <span style="font-size:0.78rem;color:var(--muted);margin-left:6px;">
+                                    (@msg.UserRole)
+                                </span>
+                                <div style="font-size:0.78rem;color:var(--muted);">
+                                    @msg.Date.ToString("dd MMM yyyy")
+                                </div>
+                            </div>
+                            <span style="@reasonColor padding:4px 12px;border-radius:100px;font-size:0.75rem;font-weight:700;">
+                                @msg.Reason
+                            </span>
+                            <span style="@priorityColor font-size:0.78rem;font-weight:700;">
+                                <i class="fa fa-circle me-1" style="font-size:0.6rem;"></i>
+                                @msg.Priority
+                            </span>
+                        </div>
+                        <span class="badge-status @(msg.Status=="Resolved"?"badge-active":"badge-pending")">
+                            @msg.Status
+                        </span>
+                    </div>
+
+                    <h6 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:8px;font-size:0.95rem;">
+                        @msg.Subject
+                    </h6>
+                    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;line-height:1.6;">
+                        @msg.Message
+                    </p>
+
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        @if (msg.Status == "Pending")
+                        {
+                            <a href="/Admin/ResolveComplaint/@msg.Id"
+                               class="btn-action btn-hire"
+                               onclick="return confirm('Mark as resolved?')">
+                                <i class="fa fa-check me-1"></i> Resolve Karein
+                            </a>
+                        }
+                        @if (!string.IsNullOrEmpty(msg.SenderEmail))
+                        {
+                            <a href="mailto:@msg.SenderEmail"
+                               class="btn-action btn-edit">
+                                <i class="fa fa-reply me-1"></i> Reply
+                            </a>
+                        }
+                        <a href="/Admin/DeleteMessage/@msg.Id"
+                           class="btn-action btn-delete"
+                           onclick="return confirm('Delete karein?')">
+                            Del
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div style="text-align:center;padding:40px;background:white;border-radius:14px;border:1px solid var(--border);">
+                <i class="fa fa-inbox"
+                   style="font-size:3rem;color:var(--muted);margin-bottom:12px;display:block;"></i>
+                <h5 style="font-family:'Syne',sans-serif;color:var(--primary);">
+                    Koi Message Nahi
+                </h5>
+                <p style="color:var(--muted);font-size:0.9rem;">
+                    Abhi tak koi complaint, feedback ya suggestion nahi aayi
+                </p>
+            </div>
+        }
+    </div>
+</div>

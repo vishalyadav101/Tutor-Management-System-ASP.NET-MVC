@@ -1,0 +1,355 @@
+﻿@using TuitionHub.Models
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Home";
+
+    var topTutors = ViewBag.TopTutors as List<TuitionHub.Models.User>
+                     ?? new List<TuitionHub.Models.User>();
+    var heroTutors = ViewBag.HeroTutors as List<TuitionHub.Models.User>
+                     ?? new List<TuitionHub.Models.User>();
+
+    int totalTutors = ViewBag.TotalTutors != null ? (int)ViewBag.TotalTutors : 0;
+    int totalStudents = ViewBag.TotalStudents != null ? (int)ViewBag.TotalStudents : 0;
+}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="hero-badge">
+                    <i class="fa fa-graduation-cap me-2"></i>
+                    India Ka #1 Tuition Platform
+                </div>
+                <h1>Apna Perfect <em>Tutor</em> Dhundein, Aaj Hi!</h1>
+                <p>TuitionHub se aap verified tutors dhund sakte hain - subject, city, aur gender ke basis pe filter karke.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="/Student/FindTutor" class="btn-hero-primary">
+                        <i class="fa fa-search me-2"></i>Tutor Dhundein
+                    </a>
+                    <a href="/Account/Register" class="btn-hero-secondary">
+                        Tutor Banein
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div>
+                        <div class="hero-stat-num">
+                            @(totalTutors > 10 ? totalTutors + "+" : "500+")
+                        </div>
+                        <div class="hero-stat-label">Verified Tutors</div>
+                    </div>
+                    <div>
+                        <div class="hero-stat-num">
+                            @(totalStudents > 10 ? totalStudents + "+" : "2000+")
+                        </div>
+                        <div class="hero-stat-label">Students</div>
+                    </div>
+                    <div>
+                        <div class="hero-stat-num">20+</div>
+                        <div class="hero-stat-label">Subjects</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="hero-card">
+                    <p style="color:rgba(255,255,255,0.6);font-size:0.82rem;margin-bottom:16px;letter-spacing:1px;text-transform:uppercase;">
+                        Top Tutors Today
+                    </p>
+
+                    @if (heroTutors.Count > 0)
+                    {
+                        for (int i = 0; i < heroTutors.Count; i++)
+                        {
+                            var t = heroTutors[i];
+                            <div class="tutor-mini-card">
+                                <div class="tutor-avatar"
+                                     style="background:@t.AvatarColor;">
+                                    @t.Initials
+                                </div>
+                                <div style="flex:1;">
+                                    <div class="tutor-mini-name">@t.FullName</div>
+                                    <div class="tutor-mini-sub">
+                                        @(string.IsNullOrEmpty(t.Subjects) ? "Tutor" : t.Subjects)
+                                        @if (!string.IsNullOrEmpty(t.City))
+                                        {
+                                            <span> - @t.City</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="rating-badge">
+                                    <i class="fa fa-star" style="color:var(--gold);font-size:0.75rem;"></i>
+                                    @(t.Rating.HasValue && t.Rating.Value > 0
+                                        ? t.Rating.Value.ToString("0.0")
+                                        : "New")
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <!-- Demo fallback agar database mein tutors nahi hain -->
+                        <div class="tutor-mini-card">
+                            <div class="tutor-avatar"
+                                 style="background:linear-gradient(135deg,#e94560,#c73652);">RS</div>
+                            <div style="flex:1;">
+                                <div class="tutor-mini-name">Rahul Sharma</div>
+                                <div class="tutor-mini-sub">Maths & Physics - Delhi</div>
+                            </div>
+                            <div class="rating-badge">
+                                <i class="fa fa-star" style="color:var(--gold);font-size:0.75rem;"></i> 4.9
+                            </div>
+                        </div>
+                        <div class="tutor-mini-card">
+                            <div class="tutor-avatar"
+                                 style="background:linear-gradient(135deg,#f5a623,#e08800);">PG</div>
+                            <div style="flex:1;">
+                                <div class="tutor-mini-name">Priya Gupta</div>
+                                <div class="tutor-mini-sub">Chemistry & Biology - Mumbai</div>
+                            </div>
+                            <div class="rating-badge">
+                                <i class="fa fa-star" style="color:var(--gold);font-size:0.75rem;"></i> 4.8
+                            </div>
+                        </div>
+                        <div class="tutor-mini-card">
+                            <div class="tutor-avatar"
+                                 style="background:linear-gradient(135deg,#3498db,#2176ae);">AK</div>
+                            <div style="flex:1;">
+                                <div class="tutor-mini-name">Amit Kumar</div>
+                                <div class="tutor-mini-sub">English & Hindi - Bangalore</div>
+                            </div>
+                            <div class="rating-badge">
+                                <i class="fa fa-star" style="color:var(--gold);font-size:0.75rem;"></i> 4.7
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section style="background:white;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="section-tag">Kyun TuitionHub?</div>
+            <h2 class="section-title">
+                Padhai Ko Banao
+                <span style="color:var(--accent)">Aasaan</span>
+            </h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 fade-in">
+                <div class="feature-box">
+                    <div class="feature-icon" style="background:rgba(233,69,96,0.1);">
+                        <i class="fa fa-search" style="color:var(--accent);"></i>
+                    </div>
+                    <h4>Smart Tutor Search</h4>
+                    <p>Subject, city, gender, aur qualification ke basis pe filter karein. Perfect tutor ek click mein milega.</p>
+                </div>
+            </div>
+            <div class="col-md-4 fade-in">
+                <div class="feature-box">
+                    <div class="feature-icon" style="background:rgba(245,166,35,0.12);">
+                        <i class="fa fa-check-circle" style="color:var(--gold);"></i>
+                    </div>
+                    <h4>Verified Tutors</h4>
+                    <p>Hamare sab tutors admin-verified hain. Fake profiles ki koi jagah nahi. 100% authentic.</p>
+                </div>
+            </div>
+            <div class="col-md-4 fade-in">
+                <div class="feature-box">
+                    <div class="feature-icon" style="background:rgba(52,152,219,0.1);">
+                        <i class="fa fa-mobile-alt" style="color:#3498db;"></i>
+                    </div>
+                    <h4>Easy Contact</h4>
+                    <p>Tutor se seedha contact karein. Complaint ya suggestion admin ko bhejo - simple 3-click process.</p>
+                </div>
+            </div>
+            <div class="col-md-4 fade-in">
+                <div class="feature-box">
+                    <div class="feature-icon" style="background:rgba(46,204,113,0.1);">
+                        <i class="fa fa-graduation-cap" style="color:#27ae60;"></i>
+                    </div>
+                    <h4>All Subjects</h4>
+                    <p>Maths, Physics, Chemistry, Biology, English, Hindi - sab subjects available hain.</p>
+                </div>
+            </div>
+            <div class="col-md-4 fade-in">
+                <div class="feature-box">
+                    <div class="feature-icon" style="background:rgba(233,69,96,0.1);">
+                        <i class="fa fa-lock" style="color:var(--accent);"></i>
+                    </div>
+                    <h4>Secure Platform</h4>
+                    <p>Aapka data safe hai. Secure login aur privacy protection ke saath build kiya gaya hai.</p>
+                </div>
+            </div>
+            <div class="col-md-4 fade-in">
+                <div class="feature-box">
+                    <div class="feature-icon" style="background:rgba(155,89,182,0.1);">
+                        <i class="fa fa-bullhorn" style="color:#9b59b6;"></i>
+                    </div>
+                    <h4>Live Announcements</h4>
+                    <p>Admin se latest updates aur news turant milti hain apne dashboard pe.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section>
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="section-tag">Process</div>
+            <h2 class="section-title">
+                Sirf
+                <span style="color:var(--accent)">3 Steps</span> Mein Shuru Karein
+            </h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 fade-in">
+                <div class="step-box">
+                    <div class="step-circle">1</div>
+                    <h5>Register Karein</h5>
+                    <p>Student ya Tutor - apna role choose karein aur free mein register karein.</p>
+                </div>
+            </div>
+            <div class="col-md-3 fade-in">
+                <div class="step-box">
+                    <div class="step-circle">2</div>
+                    <h5>Profile Banao</h5>
+                    <p>Apni details, subjects, aur location add karein.</p>
+                </div>
+            </div>
+            <div class="col-md-3 fade-in">
+                <div class="step-box">
+                    <div class="step-circle">3</div>
+                    <h5>Connect Karein</h5>
+                    <p>Students tutors ko search karein aur hire karein.</p>
+                </div>
+            </div>
+            <div class="col-md-3 fade-in">
+                <div class="step-box">
+                    <div class="step-circle" style="background:var(--gold);">
+                        <i class="fa fa-check"></i>
+                    </div>
+                    <h5>Padhai Shuru!</h5>
+                    <p>Ab padhai shuru karo apne perfect tutor ke saath.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURED TUTORS — Database se -->
+<section style="background:white;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <div class="section-tag">Top Tutors</div>
+                <h2 class="section-title">
+                    Featured
+                    <span style="color:var(--accent)">Tutors</span>
+                </h2>
+            </div>
+            <a href="/Student/FindTutor" class="btn-secondary-custom">
+                Sab Dekhein
+            </a>
+        </div>
+        <div class="row g-4">
+            @if (topTutors.Count > 0)
+            {
+                for (int i = 0; i < topTutors.Count; i++)
+                {
+                    var t = topTutors[i];
+                    string[] subArr = !string.IsNullOrEmpty(t.Subjects)
+                                      ? t.Subjects.Split(',')
+                                      : new string[0];
+                    int showCount = subArr.Length > 2 ? 2 : subArr.Length;
+
+                    <div class="col-md-4 col-lg-3 fade-in">
+                        <div class="tutor-card">
+                            <div class="tutor-card-avatar"
+                                 style="background:@t.AvatarColor;">
+                                @t.Initials
+                            </div>
+                            <div class="tutor-card-name">@t.FullName</div>
+                            <div class="tutor-card-sub">@t.Subjects</div>
+                            <div class="tutor-card-exp">
+                                @(t.Experience.HasValue ? t.Experience.Value + " yrs" : "New")
+                                @if (!string.IsNullOrEmpty(t.City))
+                                {
+                                    <span> - @t.City</span>
+                                }
+                            </div>
+                            <div class="mb-3">
+                                @for (int j = 0; j < showCount; j++)
+                                {
+                                    <span class="subject-tag">@subArr[j].Trim()</span>
+                                }
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span style="color:var(--gold);font-size:0.88rem;">
+                                    <i class="fa fa-star"></i>
+                                    @(t.Rating.HasValue && t.Rating.Value > 0
+                                        ? t.Rating.Value.ToString("0.0")
+                                        : "New")
+                                </span>
+                                <span style="color:var(--muted);font-size:0.82rem;">
+                                    @t.Qualification
+                                </span>
+                            </div>
+                            <a href="/Student/FindTutor"
+                               class="btn-hire w-100"
+                               style="display:block;text-align:center;padding:10px;border-radius:8px;font-weight:600;font-size:0.88rem;">
+                                Profile Dekhein
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div style="text-align:center;padding:40px;color:var(--muted);">
+                        <i class="fa fa-users"
+                           style="font-size:3rem;margin-bottom:16px;display:block;"></i>
+                        <p>Abhi koi verified tutor nahi hai.</p>
+                        <a href="/Account/Register?role=tutor"
+                           class="btn-primary-custom"
+                           style="display:inline-flex;">
+                            Tutor Banein
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section style="background:linear-gradient(135deg,var(--primary),#0f3460);color:white;">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <h2 class="section-title" style="color:white;">
+                    Abhi Register Karein -
+                    <span style="color:var(--gold)">Bilkul Free!</span>
+                </h2>
+                <p style="color:rgba(255,255,255,0.7);margin-bottom:32px;">
+                    Chahe aap student ho ya tutor - TuitionHub pe register karna ekdam free hai.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="/Account/Register" class="btn-hero-primary">
+                        <i class="fa fa-user-plus me-2"></i>Student Registration
+                    </a>
+                    <a href="/Account/Register?role=tutor" class="btn-hero-secondary">
+                        Tutor Registration
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

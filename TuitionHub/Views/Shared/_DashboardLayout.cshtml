@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - TuitionHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="~/Content/site.css" rel="stylesheet">
+</head>
+<body>
+    <div style="display:flex;">
+
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-brand">Tuition<span>Hub</span></div>
+            @{
+                string role = Session["Role"] != null ? Session["Role"].ToString() : "Student";
+                string username = Session["Username"] != null ? Session["Username"].ToString() : "User";
+
+                string initials = "TH";
+                try
+                {
+                    string trimmed = username.Trim();
+                    if (trimmed.Length == 0)
+                    {
+                        initials = "TH";
+                    }
+                    else if (trimmed.Contains(" "))
+                    {
+                        string[] parts = trimmed.Split(
+                            new char[] { ' ' },
+                            System.StringSplitOptions.RemoveEmptyEntries);
+                        string f = parts.Length > 0 && parts[0].Length > 0
+                                   ? parts[0][0].ToString() : "";
+                        string s = parts.Length > 1 && parts[1].Length > 0
+                                   ? parts[1][0].ToString() : "";
+                        initials = (f + s).ToUpper();
+                    }
+                    else if (trimmed.Length >= 2)
+                    {
+                        initials = (trimmed[0].ToString() +
+                                    trimmed[1].ToString()).ToUpper();
+                    }
+                    else
+                    {
+                        initials = trimmed[0].ToString().ToUpper();
+                    }
+                }
+                catch
+                {
+                    initials = "TH";
+                }
+            }
+
+            <nav class="sidebar-nav">
+                @if (role == "Admin")
+                {
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/Admin/Dashboard"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Dashboard" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-th-large"></i></span> Dashboard
+                    </a>
+                    <div class="sidebar-section-title">Users</div>
+                    <a href="/Admin/Students"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Students" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-user-graduate"></i></span> Students
+                    </a>
+                    <a href="/Admin/Tutors"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Tutors" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-chalkboard-teacher"></i></span> Tutors
+                    </a>
+                    <div class="sidebar-section-title">Content</div>
+                    <a href="/Admin/Announcements"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Announcements" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-bullhorn"></i></span> Announcements
+                    </a>
+                    <a href="/Admin/Complaints"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Complaints" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-comments"></i></span> Complaints
+                    </a>
+                    <a href="/Admin/Reports"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Reports" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-chart-bar"></i></span> Reports
+                    </a>
+                }
+                else if (role == "Tutor")
+                {
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/Tutor/Dashboard"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Dashboard" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-th-large"></i></span> Dashboard
+                    </a>
+                    <div class="sidebar-section-title">Students</div>
+                    <a href="/Tutor/Students"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Students" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-users"></i></span> Students List
+                    </a>
+                    <div class="sidebar-section-title">Account</div>
+                    <a href="/Tutor/Profile"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Profile" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-user-circle"></i></span> My Profile
+                    </a>
+                    <a href="/Tutor/Contact"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Contact" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-envelope"></i></span> Contact Admin
+                    </a>
+                }
+                else
+                {
+                    <div class="sidebar-section-title">Main</div>
+                    <a href="/Student/Dashboard"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Dashboard" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-th-large"></i></span> Dashboard
+                    </a>
+                    <div class="sidebar-section-title">Tutors</div>
+                    <a href="/Student/FindTutor"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="FindTutor" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-search"></i></span> Tutor Dhundein
+                    </a>
+                    <a href="/Student/MyTutors"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="MyTutors" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-heart"></i></span> Mere Tutors
+                    </a>
+                    <div class="sidebar-section-title">Account</div>
+                    <a href="/Student/Profile"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Profile" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-user"></i></span> My Profile
+                    </a>
+                    <a href="/Student/Contact"
+                       class="sidebar-link @(ViewData["Active"]!=null && ViewData["Active"].ToString()=="Contact" ? "active" : "")">
+                        <span class="icon"><i class="fa fa-envelope"></i></span> Contact Admin
+                    </a>
+                }
+            </nav>
+
+            <div class="sidebar-user">
+                <div class="sidebar-avatar">@initials</div>
+                <div>
+                    <div class="sidebar-user-name">@username</div>
+                    <div class="sidebar-user-role">@role</div>
+                </div>
+                <a href="/Account/Logout"
+                   style="margin-left:auto;color:rgba(255,255,255,0.5);">
+                    <i class="fa fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </aside>
+
+        <main class="dashboard-main" style="flex:1;">
+            <div class="dashboard-topbar">
+                <h5>@ViewData["Title"]</h5>
+                <div class="d-flex align-items-center gap-3">
+                    <span style="font-size:0.85rem;color:var(--muted);">
+                        <i class="fa fa-calendar me-1"></i>
+                        @DateTime.Now.ToString("dd MMM yyyy")
+                    </span>
+                    <div class="sidebar-avatar"
+                         style="width:36px;height:36px;font-size:0.8rem;">
+                        @initials
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-content">
+                @if (TempData["SuccessMsg"] != null)
+                {
+                    <div class="alert alert-success mb-4">
+                        <i class="fa fa-check-circle me-2"></i>
+                        @TempData["SuccessMsg"]
+                    </div>
+                }
+                @if (TempData["ErrorMsg"] != null)
+                {
+                    <div class="alert alert-danger mb-4">
+                        <i class="fa fa-exclamation-circle me-2"></i>
+                        @TempData["ErrorMsg"]
+                    </div>
+                }
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Scripts/site.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

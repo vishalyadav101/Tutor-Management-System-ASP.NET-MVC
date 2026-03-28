@@ -1,0 +1,212 @@
+﻿@using TuitionHub.Models
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Tutors Manage";
+    ViewData["Active"] = "Tutors";
+
+    var rawList = ViewBag.Tutors as List<TuitionHub.Models.User>;
+    var tutorList = rawList ?? new List<TuitionHub.Models.User>();
+    int pendingVerification = ViewBag.PendingVerification != null
+                              ? (int)ViewBag.PendingVerification : 0;
+}
+
+<div class="row g-4">
+    <div class="col-12">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <div>
+                <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin:0;">
+                    Tutors Management
+                </h4>
+                <p style="color:var(--muted);font-size:0.85rem;margin:0;">
+                    Verify, edit, delete karein
+                </p>
+            </div>
+            <span class="badge-status badge-pending"
+                  style="font-size:0.85rem;padding:8px 16px;">
+                <i class="fa fa-clock me-1"></i>
+                @pendingVerification Pending Verification
+            </span>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="filter-panel" style="padding:18px 24px;">
+            @using (Html.BeginForm("Tutors", "Admin", FormMethod.Get))
+            {
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Search</label>
+                        <input type="text" name="search" class="form-control"
+                               placeholder="Naam ya subject..."
+                               value="@Request.QueryString["search"]">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Subject</label>
+                        <select name="subject" class="form-select">
+                            <option value="">Sab</option>
+                            <option value="Maths">Maths</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="English">English</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Verified?</label>
+                        <select name="verified" class="form-select">
+                            <option value="">Sab</option>
+                            <option value="true">Verified</option>
+                            <option value="false">Pending</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">City</label>
+                        <input type="text" name="city" class="form-control"
+                               placeholder="City..."
+                               value="@Request.QueryString["city"]">
+                    </div>
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn-primary-custom"
+                                style="flex:1;justify-content:center;">
+                            <i class="fa fa-search"></i> Filter
+                        </button>
+                        <a href="/Admin/Tutors"
+                           class="btn-secondary-custom"
+                           style="white-space:nowrap;">Reset</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>
+                    Total Tutors:
+                    <span style="color:var(--accent);">@tutorList.Count</span>
+                </h6>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table style="width:100%;min-width:950px;">
+                    <thead>
+                        <tr>
+                            <th style="width:40px;">#</th>
+                            <th style="min-width:160px;">Name</th>
+                            <th style="min-width:120px;">Subjects</th>
+                            <th style="width:90px;">Qualification</th>
+                            <th style="width:80px;">Experience</th>
+                            <th style="width:90px;">City</th>
+                            <th style="width:90px;">Verified</th>
+                            <th style="width:80px;">Status</th>
+                            <th style="width:150px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (tutorList.Count > 0)
+                        {
+                            for (int i = 0; i < tutorList.Count; i++)
+                            {
+                                var t = tutorList[i];
+                                string tSub = t.Subjects ?? "";
+                                string tName = t.FullName ?? "";
+                                string tEmail = t.Email ?? "";
+                                string tQual = t.Qualification ?? "";
+                                string tCity = t.City ?? "";
+                                string tInit = t.Initials ?? "??";
+                                int tId = t.Id;
+
+                                string[] subArr = tSub.Length > 0
+                                                   ? tSub.Split(',')
+                                                   : new string[0];
+                                int showCount = subArr.Length > 2 ? 2 : subArr.Length;
+
+                                <tr>
+                                    <td style="color:var(--muted);font-size:0.8rem;">
+                                        @(i+1)
+                                    </td>
+                                    <td>
+                                        <div style="display:flex;align-items:center;gap:8px;">
+                                            <div class="sidebar-avatar"
+                                                 style="width:30px;height:30px;font-size:0.7rem;background:var(--accent);flex-shrink:0;">
+                                                @tInit
+                                            </div>
+                                            <div>
+                                                <strong style="font-size:0.85rem;display:block;">
+                                                    @tName
+                                                </strong>
+                                                <span style="font-size:0.73rem;color:var(--muted);word-break:break-all;">
+                                                    @tEmail
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @for (int j = 0; j < showCount; j++)
+                                        {
+                                            <span class="subject-tag">
+                                                @subArr[j].Trim()
+                                            </span>
+                                        }
+                                    </td>
+                                    <td style="font-size:0.85rem;">@tQual</td>
+                                    <td style="font-size:0.85rem;">
+                                        @(t.Experience.HasValue
+                                            ? t.Experience.Value + " yrs"
+                                            : "-")
+                                    </td>
+                                    <td style="font-size:0.85rem;">@tCity</td>
+                                    <td>
+                                        <span class="badge-status @(t.IsVerified ? "badge-active" : "badge-pending")">
+                                            @(t.IsVerified ? "Yes" : "Pending")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-status @(t.IsActive ? "badge-active" : "badge-inactive")">
+                                            @(t.IsActive ? "Active" : "Blocked")
+                                        </span>
+                                    </td>
+                                    <td style="white-space:nowrap;">
+                                        @if (!t.IsVerified)
+                                        {
+                                            <a href="/Admin/VerifyTutor/@tId"
+                                               class="btn-action btn-hire"
+                                               style="margin-right:4px;">
+                                                Verify
+                                            </a>
+                                        }
+                                        <a href="/Admin/EditTutor/@tId"
+                                           class="btn-action btn-edit"
+                                           style="margin-right:4px;">
+                                            Edit
+                                        </a>
+                                        <a href="/Admin/DeleteTutor/@tId"
+                                           class="btn-action btn-delete"
+                                           onclick="return confirm('Delete karein?')">
+                                            Del
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9"
+                                    style="text-align:center;padding:30px;color:var(--muted);">
+                                    Koi tutor registered nahi hai abhi
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="padding:16px 20px;border-top:1px solid var(--border);">
+                <span style="font-size:0.82rem;color:var(--muted);">
+                    Total: @tutorList.Count tutors
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

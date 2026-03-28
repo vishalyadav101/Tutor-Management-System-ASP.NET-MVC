@@ -1,0 +1,89 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "FAQ";
+}
+
+<section style="background:linear-gradient(135deg,var(--primary),#0f3460);color:white;padding:70px 0;">
+    <div class="container text-center">
+        <h1 style="color:white;font-family:'Syne',sans-serif;font-weight:800;">Frequently Asked <span style="color:var(--gold)">Questions</span></h1>
+        <p style="color:rgba(255,255,255,0.7);">Common sawaalon ke jawab yahaan milenge!</p>
+    </div>
+</section>
+
+<section style="background:white;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="section-tag mb-3">Students ke Liye</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        TuitionHub pe register karna free hai? <span class="icon">+</span>
+                    </div>
+                    <div class="faq-answer">Haan! TuitionHub pe registration bilkul free hai. Koi hidden charges nahi hain.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Main tutor ko kaise dhundhu? <span class="icon">+</span>
+                    </div>
+                    <div class="faq-answer">Login karein → "Tutor Dhundein" pe click karein → Subject, City, Gender filters use karein.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Complaint kaise karein agar tutor se problem ho? <span class="icon">+</span>
+                    </div>
+                    <div class="faq-answer">Dashboard mein "Contact Admin" option hai. Wahaan se "Complaint" type choose karein aur apni problem likhein.</div>
+                </div>
+
+                <div class="section-tag mb-3 mt-5">Tutors ke Liye</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Tutor ke roop mein register karne ke liye kya chahiye? <span class="icon">+</span>
+                    </div>
+                    <div class="faq-answer">Naam, email, qualification, subjects, experience aur city details deni hongi. Admin verification ke baad profile live ho jayega.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Mera profile kab verify hoga? <span class="icon">+</span>
+                    </div>
+                    <div class="faq-answer">Registration ke baad Admin 1-2 working days mein verify karta hai.</div>
+                </div>
+
+                <div class="section-tag mb-3 mt-5">Technical Questions</div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Password bhool gaye toh kya karein? <span class="icon">+</span>
+                    </div>
+                    <div class="faq-answer">Login page pe "Forgot Password" click karein. Apna registered email enter karein — reset link mil jayega.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Profile update kaise karein? <span class="icon">+</span>
+                    </div>
+                    <div class="faq-answer">Dashboard → "My Profile" → "Edit Profile" click karein.</div>
+                </div>
+
+                <div class="text-center mt-5 p-4" style="background:var(--light);border-radius:16px;">
+                    <h5 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:8px;">Aur Sawaal Hain? 🤔</h5>
+                    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:16px;">Hamari team se directly contact karein!</p>
+                    <a href="/Home/Contact" class="btn-primary-custom"><i class="fa fa-envelope me-2"></i>Contact Karein</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+function toggleFaq(el) {
+    var answer = el.nextElementSibling;
+    var icon = el.querySelector('.icon');
+    var isOpen = answer.classList.contains('open');
+    document.querySelectorAll('.faq-answer').forEach(function(a) { a.classList.remove('open'); });
+    document.querySelectorAll('.faq-question .icon').forEach(function(i) { i.textContent = '+'; });
+    if (!isOpen) { answer.classList.add('open'); icon.textContent = '−'; }
+}
+    </script>
+}

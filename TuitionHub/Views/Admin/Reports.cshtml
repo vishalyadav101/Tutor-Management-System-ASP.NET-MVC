@@ -1,0 +1,287 @@
+@using TuitionHub.Models
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Reports & Statistics";
+    ViewData["Active"] = "Reports";
+
+    var db = new TuitionHub.Models.TuitionDbContext();
+
+    int totalUsers = db.Users.Count();
+    int totalStudents = db.Users.Count(u => u.Role == "Student");
+    int totalTutors = db.Users.Count(u => u.Role == "Tutor");
+    int totalHires = db.HireRequests.Count();
+    int activeUsers = db.Users.Count(u => u.IsActive == true);
+
+    string activeRate = totalUsers > 0
+                         ? ((activeUsers * 100) / totalUsers) + "%"
+                         : "0%";
+
+    double avgRating = db.Users
+                           .Where(u => u.Role == "Tutor" && u.Rating > 0)
+                           .Select(u => u.Rating.Value)
+                           .DefaultIfEmpty(0)
+                           .Average();
+
+    var allStudents = db.Users
+                           .Where(u => u.Role == "Student" &&
+                                       u.RequiredSubject != null)
+                           .ToList();
+
+    var subjectData = new[]
+    {
+        new { Name = "Maths",     Count = allStudents.Count(s => s.RequiredSubject.Contains("Maths")) },
+        new { Name = "Physics",   Count = allStudents.Count(s => s.RequiredSubject.Contains("Physics")) },
+        new { Name = "Chemistry", Count = allStudents.Count(s => s.RequiredSubject.Contains("Chemistry")) },
+        new { Name = "Biology",   Count = allStudents.Count(s => s.RequiredSubject.Contains("Biology")) },
+        new { Name = "English",   Count = allStudents.Count(s => s.RequiredSubject.Contains("English")) },
+        new { Name = "Hindi",     Count = allStudents.Count(s => s.RequiredSubject.Contains("Hindi")) },
+    };
+
+    int maxCount = subjectData.Max(s => s.Count) > 0
+                  ? subjectData.Max(s => s.Count) : 1;
+
+    var allUsers = db.Users.Where(u => u.City != null).ToList();
+    var cityGroups = allUsers
+                      .GroupBy(u => u.City)
+                      .Select(g => new
+                      {
+                          City = g.Key,
+                          Students = g.Count(u => u.Role == "Student"),
+                          Tutors = g.Count(u => u.Role == "Tutor"),
+                          Total = g.Count()
+                      })
+                      .OrderByDescending(c => c.Total)
+                      .Take(6)
+                      .ToList();
+
+    int verifiedTutors = db.Users.Count(u => u.Role == "Tutor" && u.IsVerified);
+    int pendingHires = db.HireRequests.Count(h => h.Status == "Pending");
+    int activeHires = db.HireRequests.Count(h => h.Status == "Active");
+    int totalComplaints = db.AdminMessages.Count();
+    int pendingComplaints = db.AdminMessages.Count(m => m.Status == "Pending");
+    int resolvedComplaints = db.AdminMessages.Count(m => m.Status == "Resolved");
+}
+
+<div class="row g-4">
+
+    @* Row 1 - Main Stats *@
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(233,69,96,0.1);color:var(--accent);">
+                <i class="fa fa-users"></i>
+            </div>
+            <div>
+                <div class="stat-num">@totalUsers</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(46,204,113,0.1);color:var(--success);">
+                <i class="fa fa-handshake"></i>
+            </div>
+            <div>
+                <div class="stat-num">@totalHires</div>
+                <div class="stat-label">Total Hires</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(52,152,219,0.1);color:#3498db;">
+                <i class="fa fa-chart-bar"></i>
+            </div>
+            <div>
+                <div class="stat-num">@activeRate</div>
+                <div class="stat-label">Active Rate</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(245,166,35,0.12);color:var(--gold);">
+                <i class="fa fa-star"></i>
+            </div>
+            <div>
+                <div class="stat-num">@avgRating.ToString("0.0")</div>
+                <div class="stat-label">Avg Tutor Rating</div>
+            </div>
+        </div>
+    </div>
+
+    @* Row 2 - User Breakdown *@
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(233,69,96,0.1);color:var(--accent);">
+                <i class="fa fa-user-graduate"></i>
+            </div>
+            <div>
+                <div class="stat-num">@totalStudents</div>
+                <div class="stat-label">Total Students</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(245,166,35,0.12);color:var(--gold);">
+                <i class="fa fa-chalkboard-teacher"></i>
+            </div>
+            <div>
+                <div class="stat-num">@totalTutors</div>
+                <div class="stat-label">Total Tutors</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(46,204,113,0.1);color:var(--success);">
+                <i class="fa fa-check-circle"></i>
+            </div>
+            <div>
+                <div class="stat-num">@activeUsers</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+        </div>
+    </div>
+
+    @* Subject wise demand *@
+    <div class="col-lg-6">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>Subject-wise Demand</h6>
+            </div>
+            <div style="padding:20px;">
+                @for (int i = 0; i < subjectData.Length; i++)
+                {
+                    var s = subjectData[i];
+                    int pct = (int)((s.Count * 100.0) / maxCount);
+                    string w = pct.ToString() + "%";
+
+                    <div style="margin-bottom:16px;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                            <span style="font-weight:600;font-size:0.88rem;color:var(--primary);">
+                                @s.Name
+                            </span>
+                            <span style="font-size:0.82rem;color:var(--muted);">
+                                @s.Count students
+                            </span>
+                        </div>
+                        <div style="height:8px;background:var(--border);border-radius:100px;overflow:hidden;">
+                            <div style="height:100%;width:@w;background:var(--accent);border-radius:100px;">
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (allStudents.Count == 0)
+                {
+                    <p style="color:var(--muted);text-align:center;padding:20px;">
+                        Abhi koi student data nahi hai
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* City wise *@
+    <div class="col-lg-6">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>City-wise Users</h6>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>City</th>
+                        <th>Students</th>
+                        <th>Tutors</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (cityGroups.Count > 0)
+                    {
+                        for (int i = 0; i < cityGroups.Count; i++)
+                        {
+                            var c = cityGroups[i];
+                            <tr>
+                                <td><strong>@c.City</strong></td>
+                                <td>@c.Students</td>
+                                <td>@c.Tutors</td>
+                                <td>
+                                    <strong style="color:var(--accent);">@c.Total</strong>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4"
+                                style="text-align:center;padding:20px;color:var(--muted);">
+                                Koi city data nahi hai abhi
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* Overall Summary *@
+    <div class="col-12">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>Overall Summary</h6>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Count</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Total Students</strong></td>
+                        <td>@totalStudents</td>
+                        <td style="color:var(--muted);font-size:0.85rem;">
+                            Registered students
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Tutors</strong></td>
+                        <td>@totalTutors</td>
+                        <td style="color:var(--muted);font-size:0.85rem;">
+                            @verifiedTutors verified
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hire Requests</strong></td>
+                        <td>@totalHires</td>
+                        <td style="color:var(--muted);font-size:0.85rem;">
+                            @pendingHires pending, @activeHires active
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Complaints</strong></td>
+                        <td>@totalComplaints</td>
+                        <td style="color:var(--muted);font-size:0.85rem;">
+                            @pendingComplaints pending,
+                            @resolvedComplaints resolved
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Active Rate</strong></td>
+                        <td>@activeRate</td>
+                        <td style="color:var(--muted);font-size:0.85rem;">
+                            @activeUsers / @totalUsers users active
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

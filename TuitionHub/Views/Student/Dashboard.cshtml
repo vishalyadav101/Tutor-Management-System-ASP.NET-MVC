@@ -1,0 +1,278 @@
+﻿@*@{
+        Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+        ViewData["Title"] = "Student Dashboard";
+        ViewData["Active"] = "Dashboard";
+    }
+
+    <div style="margin-bottom:28px;">
+        <h3 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:4px;">Namaste, @Session["Username"]! 👋</h3>
+        <p style="color:var(--muted);font-size:0.9rem;">Aaj ka padhai ka plan kya hai?</p>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(233,69,96,0.1);">👨‍🏫</div>
+                <div><div class="stat-num">3</div><div class="stat-label">Hired Tutors</div></div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(245,166,35,0.12);">🔍</div>
+                <div><div class="stat-num">12</div><div class="stat-label">Searches</div></div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(52,152,219,0.1);">📩</div>
+                <div><div class="stat-num">2</div><div class="stat-label">Messages</div></div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(46,204,113,0.1);">✅</div>
+                <div><div class="stat-num">Active</div><div class="stat-label">Status</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="table-tuition">
+                <div class="table-header"><h6>Quick Actions</h6></div>
+                <div style="padding:20px;display:flex;flex-direction:column;gap:10px;">
+                    <a href="/Student/FindTutor" class="btn-primary-custom"><i class="fa fa-search"></i> Tutor Dhundein</a>
+                    <a href="/Student/MyTutors" class="btn-secondary-custom"><i class="fa fa-heart"></i> Mere Tutors</a>
+                    <a href="/Student/Profile" class="btn-secondary-custom"><i class="fa fa-user-edit"></i> Profile Edit</a>
+                    <a href="/Student/Contact" class="btn-secondary-custom"><i class="fa fa-envelope"></i> Admin Contact</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="table-tuition">
+                <div class="table-header">
+                    <h6>Mere Hired Tutors</h6>
+                    <a href="/Student/FindTutor" class="btn-action btn-view">+ Aur Dhundein</a>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>Tutor</th><th>Subject</th><th>City</th><th>Status</th><th>Action</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div style="display:flex;align-items:center;gap:10px;"><div class="sidebar-avatar" style="width:34px;height:34px;font-size:0.75rem;">RS</div><span style="font-weight:600;">Rahul Sharma</span></div></td>
+                            <td>Maths, Physics</td>
+                            <td>Delhi</td>
+                            <td><span class="badge-status badge-active">Active</span></td>
+                            <td><a href="/Student/FindTutor" class="btn-action btn-view">Dekhein</a></td>
+                        </tr>
+                        <tr>
+                            <td><div style="display:flex;align-items:center;gap:10px;"><div class="sidebar-avatar" style="width:34px;height:34px;font-size:0.75rem;background:linear-gradient(135deg,#f5a623,#e08800);">PG</div><span style="font-weight:600;">Priya Gupta</span></div></td>
+                            <td>Chemistry</td>
+                            <td>Mumbai</td>
+                            <td><span class="badge-status badge-active">Active</span></td>
+                            <td><a href="/Student/FindTutor" class="btn-action btn-view">Dekhein</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="table-tuition">
+                <div class="table-header"><h6>📢 Latest Announcements</h6></div>
+                <div style="padding:20px;">
+                    <div style="padding:16px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                            <strong style="font-size:0.95rem;color:var(--primary);">🎉 Naye Tutors Available!</strong>
+                            <span style="font-size:0.78rem;color:var(--muted);">15 Dec 2024</span>
+                        </div>
+                        <p style="color:var(--muted);font-size:0.88rem;margin:0;">10 naye verified tutors Mathematics aur Science ke liye join kar gaye hain.</p>
+                    </div>
+                    <div style="padding:16px;border:1px solid var(--border);border-radius:10px;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                            <strong style="font-size:0.95rem;color:var(--primary);">📅 Winter Schedule Notice</strong>
+                            <span style="font-size:0.78rem;color:var(--muted);">10 Dec 2024</span>
+                        </div>
+                        <p style="color:var(--muted);font-size:0.88rem;margin:0;">Winter break ke dauran apne tutors ke schedule confirm karein.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+@using TuitionHub.Models
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Student Dashboard";
+    ViewData["Active"] = "Dashboard";
+
+    var db = new TuitionHub.Models.TuitionDbContext();
+    int userId = Session["UserId"] != null ? (int)Session["UserId"] : 0;
+
+    var hiredCount = db.HireRequests.Count(h => h.StudentId == userId);
+    var myMsgs = db.AdminMessages.Count(m => m.UserId == userId);
+    var announcements = db.Announcements
+                          .OrderByDescending(a => a.Date)
+                          .Take(3)
+                          .ToList();
+    var myTutors = db.HireRequests
+                     .Where(h => h.StudentId == userId)
+                     .Select(h => h.Tutor)
+                     .Take(5)
+                     .ToList();
+}
+
+<div style="margin-bottom:28px;">
+    <h3 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:4px;">
+        Namaste, @Session["Username"]! 👋
+    </h3>
+    <p style="color:var(--muted);font-size:0.9rem;">Aaj ka padhai ka plan kya hai?</p>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(233,69,96,0.1);">👨‍🏫</div>
+            <div>
+                <div class="stat-num">@hiredCount</div>
+                <div class="stat-label">Hired Tutors</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(52,152,219,0.1);">📩</div>
+            <div>
+                <div class="stat-num">@myMsgs</div>
+                <div class="stat-label">Messages Sent</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(46,204,113,0.1);">📢</div>
+            <div>
+                <div class="stat-num">@announcements.Count</div>
+                <div class="stat-label">Announcements</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(46,204,113,0.1);">✅</div>
+            <div>
+                <div class="stat-num">Active</div>
+                <div class="stat-label">Status</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="table-tuition">
+            <div class="table-header"><h6>Quick Actions</h6></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:10px;">
+                <a href="/Student/FindTutor" class="btn-primary-custom">
+                    <i class="fa fa-search"></i> Tutor Dhundein
+                </a>
+                <a href="/Student/MyTutors" class="btn-secondary-custom">
+                    <i class="fa fa-heart"></i> Mere Tutors
+                </a>
+                <a href="/Student/Profile" class="btn-secondary-custom">
+                    <i class="fa fa-user-edit"></i> Profile Edit
+                </a>
+                <a href="/Student/Contact" class="btn-secondary-custom">
+                    <i class="fa fa-envelope"></i> Admin Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>Mere Hired Tutors</h6>
+                <a href="/Student/FindTutor" class="btn-action btn-view">+ Aur Dhundein</a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tutor</th>
+                        <th>Subject</th>
+                        <th>City</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (myTutors.Count > 0)
+                    {
+                        foreach (var t in myTutors)
+                        {
+                            <tr>
+                                <td>
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div class="sidebar-avatar"
+                                             style="width:34px;height:34px;font-size:0.75rem;">
+                                            @t.Initials
+                                        </div>
+                                        <span style="font-weight:600;">@t.FullName</span>
+                                    </div>
+                                </td>
+                                <td>@t.Subjects</td>
+                                <td>@t.City</td>
+                                <td><span class="badge-status badge-active">Active</span></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4"
+                                style="text-align:center;padding:24px;color:var(--muted);">
+                                Abhi koi tutor hire nahi kiya —
+                                <a href="/Student/FindTutor" style="color:var(--accent);">
+                                    Tutor Dhundein
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="table-tuition">
+            <div class="table-header"><h6>📢 Latest Announcements</h6></div>
+            <div style="padding:20px;">
+                @if (announcements.Count > 0)
+                {
+                    foreach (var ann in announcements)
+                    {
+                        <div style="padding:16px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                <strong style="font-size:0.95rem;color:var(--primary);">
+                                    @ann.Title
+                                </strong>
+                                <span style="font-size:0.78rem;color:var(--muted);">
+                                    @ann.Date.ToString("dd MMM yyyy")
+                                </span>
+                            </div>
+                            <p style="color:var(--muted);font-size:0.88rem;margin:0;">
+                                @ann.Content
+                            </p>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p style="text-align:center;color:var(--muted);padding:20px;">
+                        Koi announcement nahi hai abhi
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

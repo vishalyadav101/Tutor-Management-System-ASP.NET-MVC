@@ -1,0 +1,413 @@
+﻿@*@{
+        Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+        ViewData["Title"] = "Admin Dashboard";
+        ViewData["Active"] = "Dashboard";
+    }
+
+    <div style="margin-bottom:28px;">
+        <h3 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:4px;">Admin Control Panel 💥</h3>
+        <p style="color:var(--muted);font-size:0.9rem;">TuitionHub ka poora data ek jagah — manage karein.</p>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(233,69,96,0.1);">👨‍🎓</div>
+                <div><div class="stat-num">245</div><div class="stat-label">Total Students</div><div class="stat-change up">↑ +12 this week</div></div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(245,166,35,0.12);">👨‍🏫</div>
+                <div><div class="stat-num">58</div><div class="stat-label">Total Tutors</div><div class="stat-change up">↑ +5 this week</div></div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(52,152,219,0.1);">⚠️</div>
+                <div><div class="stat-num">7</div><div class="stat-label">Complaints</div><div class="stat-change down">Pending Review</div></div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(46,204,113,0.1);">📢</div>
+                <div><div class="stat-num">4</div><div class="stat-label">Announcements</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="table-tuition">
+                <div class="table-header"><h6>👨‍🎓 Recent Students</h6><a href="/Admin/Students" class="btn-action btn-view">Sab Dekhein</a></div>
+                <table>
+                    <thead><tr><th>Name</th><th>City</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Arjun Verma</strong></td><td>Delhi</td><td><span class="badge-status badge-active">Active</span></td><td><a href="/Admin/Students" class="btn-action btn-edit me-1">Edit</a><a href="#" class="btn-action btn-delete" onclick="return confirm('Delete karein?')">Del</a></td></tr>
+                        <tr><td><strong>Sneha Patel</strong></td><td>Mumbai</td><td><span class="badge-status badge-active">Active</span></td><td><a href="/Admin/Students" class="btn-action btn-edit me-1">Edit</a><a href="#" class="btn-action btn-delete" onclick="return confirm('Delete karein?')">Del</a></td></tr>
+                        <tr><td><strong>Kavya Singh</strong></td><td>Pune</td><td><span class="badge-status badge-new">New</span></td><td><a href="/Admin/Students" class="btn-action btn-edit me-1">Edit</a><a href="#" class="btn-action btn-delete" onclick="return confirm('Delete karein?')">Del</a></td></tr>
+                        <tr><td><strong>Rohan Mehta</strong></td><td>Bangalore</td><td><span class="badge-status badge-inactive">Inactive</span></td><td><a href="/Admin/Students" class="btn-action btn-edit me-1">Edit</a><a href="#" class="btn-action btn-delete" onclick="return confirm('Delete karein?')">Del</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="table-tuition">
+                <div class="table-header"><h6>👨‍🏫 Recent Tutors</h6><a href="/Admin/Tutors" class="btn-action btn-view">Sab Dekhein</a></div>
+                <table>
+                    <thead><tr><th>Name</th><th>Subject</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Rahul Sharma</strong></td><td>Maths</td><td><span class="badge-status badge-active">Verified</span></td><td><a href="/Admin/Tutors" class="btn-action btn-edit me-1">Edit</a><a href="#" class="btn-action btn-delete" onclick="return confirm('Delete karein?')">Del</a></td></tr>
+                        <tr><td><strong>Priya Gupta</strong></td><td>Chemistry</td><td><span class="badge-status badge-active">Verified</span></td><td><a href="/Admin/Tutors" class="btn-action btn-edit me-1">Edit</a><a href="#" class="btn-action btn-delete" onclick="return confirm('Delete karein?')">Del</a></td></tr>
+                        <tr><td><strong>Vikram Singh</strong></td><td>Physics</td><td><span class="badge-status badge-pending">Pending</span></td><td><a href="/Admin/Tutors" class="btn-action btn-hire me-1">✓ Verify</a><a href="#" class="btn-action btn-delete" onclick="return confirm('Delete karein?')">Del</a></td></tr>
+                        <tr><td><strong>Anjali Rao</strong></td><td>English</td><td><span class="badge-status badge-active">Verified</span></td><td><a href="/Admin/Tutors" class="btn-action btn-edit me-1">Edit</a><a href="#" class="btn-action btn-delete" onclick="return confirm('Delete karein?')">Del</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="table-tuition">
+                <div class="table-header"><h6>📢 Post Announcement</h6></div>
+                <div style="padding:16px;">
+                    @using (Html.BeginForm("AddAnnouncement", "Admin", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" name="Title" class="form-control" placeholder="Title likhein..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Content</label>
+                            <textarea name="Content" class="form-control" rows="3" placeholder="Message likhein..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary-custom"><i class="fa fa-bullhorn"></i> Post Karein</button>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="table-tuition">
+                <div class="table-header"><h6>⚠️ Recent Complaints</h6><a href="/Admin/Complaints" class="btn-action btn-view">Sab Dekhein</a></div>
+                <table>
+                    <thead><tr><th>From</th><th>Type</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Arjun (Student)</strong></td><td><span class="badge-status badge-new">Complaint</span></td><td><span class="badge-status badge-pending">Pending</span></td></tr>
+                        <tr><td><strong>Rahul (Tutor)</strong></td><td><span class="badge-status badge-active">Feedback</span></td><td><span class="badge-status badge-active">Resolved</span></td></tr>
+                        <tr><td><strong>Priya (Tutor)</strong></td><td><span class="badge-status badge-new">Suggestion</span></td><td><span class="badge-status badge-pending">Pending</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>*@
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Active"] = "Dashboard";
+}
+
+<div style="margin-bottom:28px;">
+    <h3 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:4px;">Admin Control Panel 💥</h3>
+    <p style="color:var(--muted);font-size:0.9rem;">TuitionHub ka poora data ek jagah — manage karein.</p>
+</div>
+
+@* ===== STAT CARDS — Database se data ===== *@
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(233,69,96,0.1);">👨‍🎓</div>
+            <div>
+                <div class="stat-num">@(ViewBag.TotalStudents ?? 0)</div>
+                <div class="stat-label">Total Students</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(245,166,35,0.12);">👨‍🏫</div>
+            <div>
+                <div class="stat-num">@(ViewBag.TotalTutors ?? 0)</div>
+                <div class="stat-label">Total Tutors</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(52,152,219,0.1);">⚠️</div>
+            <div>
+                <div class="stat-num">@(ViewBag.PendingComplaints ?? 0)</div>
+                <div class="stat-label">Complaints</div>
+                <div class="stat-change down">Pending Review</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(46,204,113,0.1);">📢</div>
+            <div>
+                <div class="stat-num">@(ViewBag.TotalAnnouncements ?? 0)</div>
+                <div class="stat-label">Announcements</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+
+    @* ===== RECENT STUDENTS — Database se ===== *@
+    <div class="col-lg-6">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>👨‍🎓 Recent Students</h6>
+                <a href="/Admin/Students" class="btn-action btn-view">Sab Dekhein</a>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Name</th><th>City</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.RecentStudents != null)
+                    {
+                        foreach (var s in ViewBag.RecentStudents)
+                        {
+                            <tr>
+                                <td><strong>@s.FullName</strong></td>
+                                <td>@s.City</td>
+                                <td>
+                                    @if (s.IsActive)
+                                    {
+                                        <span class="badge-status badge-active">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-status badge-inactive">Inactive</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a href="/Admin/EditStudent/@s.Id" class="btn-action btn-edit me-1">Edit</a>
+                                    <a href="/Admin/DeleteStudent/@s.Id" class="btn-action btn-delete"
+                                       onclick="return confirm('@s.FullName ko delete karein?')">Del</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">
+                                Koi student nahi mila
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* ===== RECENT TUTORS — Database se ===== *@
+    <div class="col-lg-6">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>👨‍🏫 Recent Tutors</h6>
+                <a href="/Admin/Tutors" class="btn-action btn-view">Sab Dekhein</a>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Name</th><th>Subject</th><th>Status</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.RecentTutors != null)
+                    {
+                        foreach (var t in ViewBag.RecentTutors)
+                        {
+                            <tr>
+                                <td><strong>@t.FullName</strong></td>
+                                <td>@t.Subjects</td>
+                                <td>
+                                    @if (t.IsVerified)
+                                    {
+                                        <span class="badge-status badge-active">Verified</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-status badge-pending">Pending</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!t.IsVerified)
+                                    {
+                                        <a href="/Admin/VerifyTutor/@t.Id" class="btn-action btn-hire me-1">✓ Verify</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="/Admin/EditTutor/@t.Id" class="btn-action btn-edit me-1">Edit</a>
+                                    }
+                                    <a href="/Admin/DeleteTutor/@t.Id" class="btn-action btn-delete"
+                                       onclick="return confirm('@t.FullName ko delete karein?')">Del</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">
+                                Koi tutor nahi mila
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* ===== POST ANNOUNCEMENT ===== *@
+    <div class="col-lg-6">
+        <div class="table-tuition">
+            <div class="table-header"><h6>📢 Post Announcement</h6></div>
+            <div style="padding:16px;">
+                @using (Html.BeginForm("AddAnnouncement", "Admin", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" name="Title" class="form-control"
+                               placeholder="Title likhein..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Content</label>
+                        <textarea name="Content" class="form-control" rows="3"
+                                  placeholder="Message likhein..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Target</label>
+                        <select name="Target" class="form-select">
+                            <option value="All">Sab (Students + Tutors)</option>
+                            <option value="Students">Sirf Students</option>
+                            <option value="Tutors">Sirf Tutors</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Priority</label>
+                        <select name="Priority" class="form-select">
+                            <option value="Normal">🟢 Normal</option>
+                            <option value="Important">🟡 Important</option>
+                            <option value="Urgent">🔴 Urgent</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="fa fa-bullhorn"></i> Post Karein
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* ===== RECENT COMPLAINTS — Database se ===== *@
+    <div class="col-lg-6">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>⚠️ Recent Complaints</h6>
+                <a href="/Admin/Complaints" class="btn-action btn-view">Sab Dekhein</a>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>From</th><th>Type</th><th>Status</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.Announcements != null)
+                    {
+                        // Complaints ViewBag se lo
+                    }
+                    @{
+                        var db = new TuitionHub.Models.TuitionDbContext();
+                        var recentMsgs = db.AdminMessages
+                                           .OrderByDescending(m => m.Date)
+                                           .Take(5)
+                                           .ToList();
+                    }
+                    @if (recentMsgs.Count > 0)
+                    {
+                        foreach (var msg in recentMsgs)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@msg.SenderName</strong>
+                                    <small style="color:var(--muted);">(@msg.UserRole)</small>
+                                </td>
+                                <td>
+                                    <span class="badge-status badge-new">@msg.Reason</span>
+                                </td>
+                                <td>
+                                    @if (msg.Status == "Resolved")
+                                    {
+                                        <span class="badge-status badge-active">Resolved</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-status badge-pending">Pending</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a href="/Admin/ResolveComplaint/@msg.Id"
+                                       class="btn-action btn-hire"
+                                       onclick="return confirm('Resolve karein?')">✓</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">
+                                Koi complaint nahi hai
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* ===== RECENT ANNOUNCEMENTS — Database se ===== *@
+    <div class="col-12">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>📢 Recent Announcements</h6>
+                <a href="/Admin/Announcements" class="btn-action btn-view">Sab Dekhein</a>
+            </div>
+            <div style="padding:16px;">
+                @if (ViewBag.Announcements != null)
+                {
+                    foreach (var ann in ViewBag.Announcements)
+                    {
+                        <div style="border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                                <strong style="color:var(--primary);">@ann.Title</strong>
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <span style="font-size:0.78rem;color:var(--muted);">
+                                        @ann.Date.ToString("dd MMM yyyy")
+                                    </span>
+                                    <a href="/Admin/DeleteAnnouncement/@ann.Id"
+                                       class="btn-action btn-delete"
+                                       style="padding:4px 10px;font-size:0.75rem;"
+                                       onclick="return confirm('Delete karein?')">Del</a>
+                                </div>
+                            </div>
+                            <p style="color:var(--muted);font-size:0.88rem;margin:0;">@ann.Content</p>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p style="color:var(--muted);text-align:center;padding:20px;">
+                        Koi announcement nahi hai
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>

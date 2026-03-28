@@ -1,0 +1,88 @@
+@* Save as: Views/Admin/EditStudent.cshtml *@
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Student Edit";
+    ViewData["Active"] = "Students";
+    // var student = ViewBag.Student as TuitionHub.Models.User;
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+            <a href="/Admin/Students" style="color:var(--muted);font-size:0.9rem;">
+                ← Students List
+            </a>
+            <span style="color:var(--muted);">/</span>
+            <span style="font-size:0.9rem;color:var(--primary);">Edit Student</span>
+        </div>
+
+        <div class="form-section">
+            <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:4px;">Student Edit Karein</h4>
+            <p style="color:var(--muted);font-size:0.88rem;margin-bottom:24px;">Student ki details update karein ya account block/unblock karein</p>
+
+            @using (Html.BeginForm("EditStudent", "Admin", new { id = ViewBag.Student?.Id ?? 0 }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Pura Naam *</label>
+                        <input type="text" name="FullName" class="form-control" value="@(ViewBag.Student?.FullName ?? "")" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email *</label>
+                        <input type="email" name="Email" class="form-control" value="@(ViewBag.Student?.Email ?? "")" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" name="Phone" class="form-control" value="@(ViewBag.Student?.Phone ?? "")">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">City</label>
+                        <input type="text" name="City" class="form-control" value="@(ViewBag.Student?.City ?? "")">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Gender</label>
+                        <select name="Gender" class="form-select">
+                            <option value="Male" @(ViewBag.Student?.Gender=="Male"?"selected":"")>Male</option>
+                            <option value="Female" @(ViewBag.Student?.Gender=="Female"?"selected":"")>Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Class</label>
+                        <select name="Class" class="form-select">
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i" @(ViewBag.Student?.Class==i.ToString()?"selected":"")>Class @i</option>
+                            }
+                            <option value="College">College</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Required Subject</label>
+                        <input type="text" name="RequiredSubject" class="form-control" value="@(ViewBag.Student?.RequiredSubject ?? "")">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Account Status</label>
+                        <select name="IsActive" class="form-select">
+                            <option value="true" @(ViewBag.Student?.IsActive==true?"selected":"")>✅ Active</option>
+                            <option value="false" @(ViewBag.Student?.IsActive==false?"selected":"")>🚫 Blocked</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 d-flex gap-3 mt-2">
+                        <button type="submit" class="btn-primary-custom">
+                            <i class="fa fa-save"></i> Save Changes
+                        </button>
+                        <a href="/Admin/Students" class="btn-secondary-custom">Cancel</a>
+                        <a href="/Admin/DeleteStudent/@(ViewBag.Student?.Id ?? 0)"
+                           class="btn-action btn-delete" style="padding:12px 24px;border-radius:10px;"
+                           onclick="return confirm('Is student ko permanently delete karein?')">
+                            Delete Student
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

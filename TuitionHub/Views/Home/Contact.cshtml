@@ -1,0 +1,98 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Contact Us";
+}
+
+<section style="background:linear-gradient(135deg,var(--primary),#0f3460);color:white;padding:70px 0;">
+    <div class="container text-center">
+        <h1 style="color:white;font-family:'Syne',sans-serif;font-weight:800;">Contact <span style="color:var(--gold)">Us</span></h1>
+        <p style="color:rgba(255,255,255,0.7);">Koi bhi sawaal ho — hum yahaan hain!</p>
+    </div>
+</section>
+
+<section style="background:white;">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <div class="contact-info-box">
+                    <h3 style="font-family:'Syne',sans-serif;margin-bottom:24px;">Hum Kahan Hain</h3>
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">📍</div>
+                        <div>
+                            <h6 style="font-weight:600;font-size:0.9rem;margin-bottom:3px;">Address</h6>
+                            <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin:0;">123, Education Street, New Delhi - 110001</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">📞</div>
+                        <div>
+                            <h6 style="font-weight:600;font-size:0.9rem;margin-bottom:3px;">Phone</h6>
+                            <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin:0;">+91 98765 43210</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">📧</div>
+                        <div>
+                            <h6 style="font-weight:600;font-size:0.9rem;margin-bottom:3px;">Email</h6>
+                            <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin:0;">support@tuitionhub.in</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">⏰</div>
+                        <div>
+                            <h6 style="font-weight:600;font-size:0.9rem;margin-bottom:3px;">Timing</h6>
+                            <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin:0;">Mon–Sat: 9 AM – 6 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="form-section">
+                    <h3 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:8px;">Message Bhejein</h3>
+                    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:28px;">Suggestion, Feedback, ya Complaint — sab yahan bhejo.</p>
+                    @using (Html.BeginForm("Contact", "Home", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Aapka Naam *</label>
+                                <input type="text" name="Name" class="form-control" placeholder="Full name likhein" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" name="Email" class="form-control" placeholder="email@example.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" name="Phone" class="form-control" placeholder="+91 XXXXX XXXXX">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Message Type *</label>
+                                <select name="Type" class="form-select" required>
+                                    <option value="">-- Select Type --</option>
+                                    <option value="Suggestion">💡 Suggestion</option>
+                                    <option value="Feedback">📝 Feedback</option>
+                                    <option value="Complaint">⚠️ Complaint</option>
+                                    <option value="Other">❓ Other</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Subject *</label>
+                                <input type="text" name="Subject" class="form-control" placeholder="Message ka subject likhein" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Message *</label>
+                                <textarea name="Message" class="form-control" rows="5" placeholder="Apni baat likhein..." required style="resize:vertical;"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn-primary-custom">
+                                    <i class="fa fa-paper-plane"></i> Message Bhejein
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

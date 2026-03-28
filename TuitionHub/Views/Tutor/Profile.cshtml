@@ -1,0 +1,188 @@
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "My Profile";
+    ViewData["Active"] = "Profile";
+
+    var tutor = ViewBag.Tutor as TuitionHub.Models.User;
+    string tName = tutor != null ? tutor.FullName : Session["Username"] != null ? Session["Username"].ToString() : "";
+    string tQual = tutor != null ? tutor.Qualification : "";
+    string tCity = tutor != null ? tutor.City : "";
+    string tGender = tutor != null ? tutor.Gender : "";
+    string tSubjects = tutor != null ? tutor.Subjects : "";
+    string tBio = tutor != null ? tutor.Bio : "";
+    string tPhone = tutor != null ? tutor.Phone : "";
+    string tInitials = tutor != null ? tutor.Initials : "??";
+    int tExp = tutor != null && tutor.Experience.HasValue ? tutor.Experience.Value : 0;
+    double tRating = tutor != null && tutor.Rating.HasValue ? tutor.Rating.Value : 0.0;
+    bool tVerified = tutor != null ? tutor.IsVerified : false;
+}
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="table-tuition" style="padding:0;overflow:hidden;">
+            <div style="background:linear-gradient(135deg,var(--primary),#0f3460);padding:36px 24px;text-align:center;">
+                <div style="width:90px;height:90px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:white;margin:0 auto 16px;">
+                    @tInitials
+                </div>
+                <h4 style="font-family:'Syne',sans-serif;color:white;margin-bottom:4px;">
+                    @tName
+                </h4>
+                <p style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-bottom:16px;">
+                    @tSubjects
+                </p>
+                <span class="badge-status @(tVerified ? "badge-active" : "badge-pending")"
+                      style="display:inline-flex;align-items:center;gap:6px;">
+                    @if (tVerified)
+                    {
+                        <i class="fa fa-check-circle"></i>
+                        <span>Verified Tutor</span>
+                    }
+                    else
+                    {
+                        <i class="fa fa-clock"></i>
+                        <span>Pending Verification</span>
+                    }
+                </span>
+            </div>
+            <div style="padding:24px;">
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div style="display:flex;gap:12px;align-items:center;">
+                        <i class="fa fa-graduation-cap"
+                           style="color:var(--accent);width:20px;"></i>
+                        <div>
+                            <div style="font-size:0.75rem;color:var(--muted);">Qualification</div>
+                            <div style="font-weight:600;font-size:0.9rem;">
+                                @(string.IsNullOrEmpty(tQual) ? "Not added" : tQual)
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:center;">
+                        <i class="fa fa-briefcase"
+                           style="color:var(--accent);width:20px;"></i>
+                        <div>
+                            <div style="font-size:0.75rem;color:var(--muted);">Experience</div>
+                            <div style="font-weight:600;font-size:0.9rem;">@tExp Years</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:center;">
+                        <i class="fa fa-map-marker-alt"
+                           style="color:var(--accent);width:20px;"></i>
+                        <div>
+                            <div style="font-size:0.75rem;color:var(--muted);">City</div>
+                            <div style="font-weight:600;font-size:0.9rem;">
+                                @(string.IsNullOrEmpty(tCity) ? "Not added" : tCity)
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:center;">
+                        <i class="fa fa-star"
+                           style="color:var(--gold);width:20px;"></i>
+                        <div>
+                            <div style="font-size:0.75rem;color:var(--muted);">Rating</div>
+                            <div style="font-weight:600;font-size:0.9rem;">
+                                @tRating.ToString("0.0") / 5.0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="form-section">
+            <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:4px;">
+                Profile Edit Karein
+            </h4>
+            <p style="color:var(--muted);font-size:0.88rem;margin-bottom:24px;">
+                Apni information update karein
+            </p>
+
+            @using (Html.BeginForm("UpdateProfile", "Tutor", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Pura Naam</label>
+                        <input type="text" name="FullName" class="form-control"
+                               value="@tName" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" name="Phone" class="form-control"
+                               value="@tPhone" placeholder="+91 XXXXX XXXXX">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">City</label>
+                        <input type="text" name="City" class="form-control"
+                               value="@tCity" placeholder="Aapki city">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Gender</label>
+                        <select name="Gender" class="form-select">
+                            <option value="Male"
+                                    @(tGender == "Male" ? "selected" : "")>
+                                Male
+                            </option>
+                            <option value="Female"
+                                    @(tGender == "Female" ? "selected" : "")>
+                                Female
+                            </option>
+                            <option value="Other"
+                                    @(tGender == "Other" ? "selected" : "")>
+                                Other
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Qualification</label>
+                        <select name="Qualification" class="form-select">
+                            @foreach (var q in new string[]
+                                {"B.Sc","B.Tech","B.Ed","M.Sc","M.Tech","M.Ed","MA","PhD"})
+                            {
+                                <option value="@q" @(tQual == q ? "selected" : "")>@q</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Experience (Years)</label>
+                        <input type="number" name="Experience" class="form-control"
+                               value="@tExp" min="0" max="50">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Subjects</label>
+                        <input type="text" name="Subjects" class="form-control"
+                               value="@tSubjects"
+                               placeholder="Maths, Physics, Chemistry">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Bio / About Me</label>
+                        <textarea name="Bio" class="form-control" rows="4"
+                                  placeholder="Apne aap ke baare mein batao...">@tBio</textarea>
+                    </div>
+                    <div class="col-12">
+                        <hr style="border-color:var(--border);">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Naya Password (optional)</label>
+                        <input type="password" name="NewPassword" class="form-control"
+                               placeholder="Khali chhodein agar change nahi karna">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" name="ConfirmPassword" class="form-control"
+                               placeholder="Dobara likhein">
+                    </div>
+                    <div class="col-12 d-flex gap-3">
+                        <button type="submit" class="btn-primary-custom">
+                            <i class="fa fa-save me-2"></i> Save Changes
+                        </button>
+                        <a href="/Tutor/Dashboard" class="btn-secondary-custom">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

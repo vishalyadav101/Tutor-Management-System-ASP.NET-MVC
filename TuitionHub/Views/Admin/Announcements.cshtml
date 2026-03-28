@@ -1,0 +1,131 @@
+@using TuitionHub.Models
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Announcements";
+    ViewData["Active"] = "Announcements";
+
+    var annList = ViewBag.Announcements as List<TuitionHub.Models.Announcement>;
+    int annCount = ViewBag.AnnouncementCount != null ? (int)ViewBag.AnnouncementCount : 0;
+}
+
+<div class="row g-4">
+
+    @* Add New Announcement *@
+    <div class="col-lg-5">
+        <div class="form-section" style="height:fit-content;">
+            <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:4px;">
+                <i class="fa fa-bullhorn me-2" style="color:var(--accent);"></i>
+                Naya Announcement
+            </h4>
+            <p style="color:var(--muted);font-size:0.88rem;margin-bottom:24px;">
+                Sab students aur tutors ko dikhega
+            </p>
+
+            @using (Html.BeginForm("AddAnnouncement", "Admin", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Announcement Title *</label>
+                        <input type="text" name="Title" class="form-control"
+                               placeholder="e.g. Naye tutors available hain!" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Content / Message *</label>
+                        <textarea name="Content" class="form-control" rows="5"
+                                  placeholder="Poori announcement yahan likhein..."
+                                  required style="resize:vertical;"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Target Audience</label>
+                        <select name="Target" class="form-select">
+                            <option value="All">Sab (Students + Tutors)</option>
+                            <option value="Students">Sirf Students</option>
+                            <option value="Tutors">Sirf Tutors</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Priority</label>
+                        <select name="Priority" class="form-select">
+                            <option value="Normal">Normal</option>
+                            <option value="Important">Important</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn-primary-custom w-100"
+                                style="justify-content:center;">
+                            <i class="fa fa-bullhorn me-2"></i> Publish Karein
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @* Existing Announcements *@
+    <div class="col-lg-7">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>Published Announcements (@annCount)</h6>
+            </div>
+            <div style="padding:16px;">
+                @if (annList != null && annList.Count > 0)
+                {
+                    for (int i = 0; i < annList.Count; i++)
+                    {
+                        var ann = annList[i];
+
+                        string priorityBadge = ann.Priority == "Urgent"
+                            ? "background:rgba(231,76,60,0.1);color:#c0392b;"
+                            : ann.Priority == "Important"
+                            ? "background:rgba(245,166,35,0.15);color:#d48000;"
+                            : "background:rgba(46,204,113,0.1);color:#27ae60;";
+
+                        <div style="border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:12px;background:white;">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+                                <div style="flex:1;">
+                                    <h6 style="font-family:'Syne',sans-serif;color:var(--primary);margin:0 0 4px;font-size:0.95rem;">
+                                        @ann.Title
+                                    </h6>
+                                    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                                        <span style="@priorityBadge padding:2px 10px;border-radius:100px;font-size:0.72rem;font-weight:700;">
+                                            @ann.Priority
+                                        </span>
+                                        <span style="background:rgba(52,152,219,0.1);color:#2980b9;padding:2px 10px;border-radius:100px;font-size:0.72rem;font-weight:700;">
+                                            @ann.Target
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="display:flex;gap:6px;align-items:center;">
+                                    <span class="badge-status badge-active">Active</span>
+                                    <a href="/Admin/DeleteAnnouncement/@ann.Id"
+                                       class="btn-action btn-delete"
+                                       onclick="return confirm('Delete karein?')"
+                                       style="padding:4px 10px;font-size:0.75rem;">
+                                        Del
+                                    </a>
+                                </div>
+                            </div>
+                            <p style="color:var(--muted);font-size:0.87rem;margin-bottom:8px;line-height:1.6;">
+                                @ann.Content
+                            </p>
+                            <span style="font-size:0.75rem;color:var(--muted);">
+                                <i class="fa fa-calendar me-1"></i>
+                                @ann.Date.ToString("dd MMM yyyy, hh:mm tt")
+                            </span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div style="text-align:center;padding:40px;color:var(--muted);">
+                        <i class="fa fa-bullhorn"
+                           style="font-size:2.5rem;margin-bottom:12px;display:block;"></i>
+                        <p>Koi announcement nahi hai abhi</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

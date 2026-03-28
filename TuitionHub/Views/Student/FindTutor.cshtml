@@ -1,0 +1,216 @@
+﻿@using TuitionHub.Models
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Tutor Dhundein";
+
+    var rawList = ViewBag.Tutors as List<TuitionHub.Models.User>;
+    var tutorList = rawList ?? new List<TuitionHub.Models.User>();
+}
+
+<section style="background:linear-gradient(135deg,var(--primary),#0f3460);color:white;padding:50px 0;">
+    <div class="container">
+        <div class="section-tag" style="background:rgba(233,69,96,0.2);color:#ff8fa3;">Search</div>
+        <h2 class="section-title" style="color:white;">
+            Apna Perfect <span style="color:var(--gold)">Tutor</span> Dhundein
+        </h2>
+        <p style="color:rgba(255,255,255,0.7);">Verified tutors mein se filter karein</p>
+    </div>
+</section>
+
+<section style="background:var(--light);padding:40px 0;">
+    <div class="container">
+        <div class="row g-4">
+
+            <div class="col-lg-3">
+                <div class="filter-panel" style="position:sticky;top:80px;">
+                    <h6>🔍 Filters</h6>
+                    @using (Html.BeginForm("FindTutor", "Student", FormMethod.Get))
+                    {
+                        <label class="form-label mt-2">Subject</label>
+                        <select name="subject" class="form-select">
+                            <option value="">Sab Subjects</option>
+                            <option value="Maths"
+                                    @(Request.QueryString["subject"] == "Maths" ? "selected" : "")>
+                                Maths
+                            </option>
+                            <option value="Physics"
+                                    @(Request.QueryString["subject"] == "Physics" ? "selected" : "")>
+                                Physics
+                            </option>
+                            <option value="Chemistry"
+                                    @(Request.QueryString["subject"] == "Chemistry" ? "selected" : "")>
+                                Chemistry
+                            </option>
+                            <option value="Biology"
+                                    @(Request.QueryString["subject"] == "Biology" ? "selected" : "")>
+                                Biology
+                            </option>
+                            <option value="English"
+                                    @(Request.QueryString["subject"] == "English" ? "selected" : "")>
+                                English
+                            </option>
+                            <option value="Hindi"
+                                    @(Request.QueryString["subject"] == "Hindi" ? "selected" : "")>
+                                Hindi
+                            </option>
+                        </select>
+                        <hr>
+                        <label class="form-label">Gender</label>
+                        <select name="gender" class="form-select">
+                            <option value="">Koi bhi</option>
+                            <option value="Male"
+                                    @(Request.QueryString["gender"] == "Male" ? "selected" : "")>
+                                Male
+                            </option>
+                            <option value="Female"
+                                    @(Request.QueryString["gender"] == "Female" ? "selected" : "")>
+                                Female
+                            </option>
+                        </select>
+                        <hr>
+                        <label class="form-label">Qualification</label>
+                        <select name="qualification" class="form-select">
+                            <option value="">Koi bhi</option>
+                            <option value="B.Sc">B.Sc</option>
+                            <option value="B.Tech">B.Tech</option>
+                            <option value="B.Ed">B.Ed</option>
+                            <option value="M.Sc">M.Sc</option>
+                            <option value="MA">MA</option>
+                            <option value="PhD">PhD</option>
+                        </select>
+                        <hr>
+                        <label class="form-label">City</label>
+                        <input type="text" name="city" class="form-control"
+                               placeholder="City likhein..."
+                               value="@Request.QueryString["city"]">
+                        <hr>
+                        <button type="submit" class="btn-primary-custom w-100"
+                                style="justify-content:center;">
+                            <i class="fa fa-search"></i> Search
+                        </button>
+                        <a href="/Student/FindTutor"
+                           class="btn-secondary-custom w-100 mt-2"
+                           style="text-align:center;display:flex;justify-content:center;">
+                            Reset
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <div class="col-lg-9">
+                <p style="color:var(--muted);font-size:0.9rem;margin-bottom:16px;">
+                    <strong style="color:var(--primary);">@tutorList.Count</strong>
+                    tutors mile
+                </p>
+
+                @if (tutorList.Count > 0)
+                {
+                    <div class="row g-4">
+                        @for (int i = 0; i < tutorList.Count; i++)
+                        {
+                            var t = tutorList[i];
+                            string tSub = t.Subjects ?? "";
+                            string tName = t.FullName ?? "";
+                            string tCity = t.City ?? "";
+                            string tQual = t.Qualification ?? "";
+                            string tInit = t.Initials ?? "??";
+                            string tColor = t.AvatarColor ?? "var(--accent)";
+                            int tId = t.Id;
+
+                            string[] subArr = tSub.Length > 0
+                                               ? tSub.Split(',')
+                                               : new string[0];
+                            int showCount = subArr.Length > 3 ? 3 : subArr.Length;
+
+                            bool isStudent = Session["UserId"] != null
+                                            && Session["Role"] != null
+                                            && Session["Role"].ToString() == "Student";
+                            bool isGuest = Session["UserId"] == null;
+
+                            <div class="col-md-6 col-lg-4">
+                                <div class="tutor-card">
+                                    <div class="tutor-card-avatar"
+                                         style="background:@tColor;">
+                                        @tInit
+                                    </div>
+                                    <div class="tutor-card-name">@tName</div>
+                                    <div class="tutor-card-sub">@tSub</div>
+                                    <div class="tutor-card-exp">
+                                        @(t.Experience.HasValue
+                                            ? t.Experience.Value + " yrs"
+                                            : "New") • @tCity
+                                        </div>
+                                        <div class="mb-3">
+                                            @for (int j = 0; j < showCount; j++)
+                                            {
+                                                <span class="subject-tag">
+                                                    @subArr[j].Trim()
+                                                </span>
+                                            }
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <span style="color:var(--gold);font-size:0.85rem;">
+                                                ⭐ @(t.Rating.HasValue
+                                                ? t.Rating.Value.ToString("0.0")
+                                                : "New")
+                                            </span>
+                                            <span style="color:var(--muted);font-size:0.8rem;">
+                                                @tQual
+                                            </span>
+                                        </div>
+                                        @if (isStudent)
+                                        {
+                                            <form action="/Student/HireTutor"
+                                                  method="post"
+                                                  style="margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden"
+                                                       name="tutorId"
+                                                       value="@tId">
+                                                <button type="submit"
+                                                        class="btn-hire w-100"
+                                                        style="width:100%;display:block;text-align:center;padding:10px;border-radius:8px;font-weight:600;font-size:0.88rem;border:none;cursor:pointer;color:white;">
+                                                    Hire Karein
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (isGuest)
+                                        {
+                                            <a href="/Account/Login"
+                                               class="btn-hire w-100"
+                                               style="display:block;text-align:center;padding:10px;border-radius:8px;font-weight:600;font-size:0.88rem;color:white;">
+                                                Login to Hire
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <div style="text-align:center;padding:10px;background:var(--light);border-radius:8px;font-size:0.85rem;color:var(--muted);">
+                                                Sirf Students hire kar sakte hain
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                    </div>
+                }
+                else
+                {
+                    <div style="text-align:center;padding:60px 20px;background:white;border-radius:16px;border:2px dashed var(--border);">
+                        <div style="font-size:3rem;margin-bottom:16px;">🔍</div>
+                        <h5 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:8px;">
+                            Koi Tutor Nahi Mila
+                        </h5>
+                        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">
+                            Filter change karein ya pehle koi tutor register karein
+                        </p>
+                        <a href="/Student/FindTutor"
+                           class="btn-primary-custom"
+                           style="display:inline-flex;">
+                            Reset Filters
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,142 @@
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Admin Se Contact Karein";
+    ViewData["Active"] = "Contact";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="form-section">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div style="width:56px;height:56px;background:rgba(233,69,96,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--accent);">
+                    <i class="fa fa-envelope"></i>
+                </div>
+                <div>
+                    <h3 style="font-family:'Syne',sans-serif;color:var(--primary);margin:0;">
+                        Admin Se Contact Karein
+                    </h3>
+                    <p style="color:var(--muted);font-size:0.88rem;margin:0;">
+                        Suggestion, Feedback, ya Complaint bhejein
+                    </p>
+                </div>
+            </div>
+
+            @if (TempData["SuccessMsg"] != null)
+            {
+                <div class="alert alert-success mb-4">
+                    <i class="fa fa-check-circle me-2"></i>
+                    @TempData["SuccessMsg"]
+                </div>
+            }
+            @if (TempData["ErrorMsg"] != null)
+            {
+                <div class="alert alert-danger mb-4">
+                    <i class="fa fa-exclamation-circle me-2"></i>
+                    @TempData["ErrorMsg"]
+                </div>
+            }
+
+            <div class="mb-4">
+                <label class="form-label">Contact Ka Reason *</label>
+                <div class="row g-3">
+                    <div class="col-4">
+                        <div class="role-card selected"
+                             id="reasonSuggestion"
+                             onclick="selectReason('Suggestion')"
+                             style="padding:16px;cursor:pointer;text-align:center;">
+                            <div style="font-size:1.8rem;color:var(--accent);">
+                                <i class="fa fa-lightbulb"></i>
+                            </div>
+                            <h5 style="font-size:0.9rem;margin-top:8px;">Suggestion</h5>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="role-card"
+                             id="reasonFeedback"
+                             onclick="selectReason('Feedback')"
+                             style="padding:16px;cursor:pointer;text-align:center;">
+                            <div style="font-size:1.8rem;color:#3498db;">
+                                <i class="fa fa-comment"></i>
+                            </div>
+                            <h5 style="font-size:0.9rem;margin-top:8px;">Feedback</h5>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="role-card"
+                             id="reasonComplaint"
+                             onclick="selectReason('Complaint')"
+                             style="padding:16px;cursor:pointer;text-align:center;">
+                            <div style="font-size:1.8rem;color:#e74c3c;">
+                                <i class="fa fa-exclamation-triangle"></i>
+                            </div>
+                            <h5 style="font-size:0.9rem;margin-top:8px;">Complaint</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @using (Html.BeginForm("Contact", "Tutor", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Reason" id="selectedReason" value="Suggestion">
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Subject *</label>
+                        <input type="text" name="Subject" class="form-control"
+                               placeholder="Apni baat ka short summary" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Message *</label>
+                        <textarea name="Message" class="form-control" rows="6"
+                                  placeholder="Poori baat detail mein likhein..."
+                                  required style="resize:vertical;"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Priority</label>
+                        <select name="Priority" class="form-select">
+                            <option value="Low">Low - Koi jaldi nahi</option>
+                            <option value="Medium" selected>Medium - Normal</option>
+                            <option value="High">High - Urgent hai</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mt-4">
+                    <button type="submit" class="btn-primary-custom">
+                        <i class="fa fa-paper-plane me-2"></i> Message Bhejein
+                    </button>
+                    <a href="/Tutor/Dashboard" class="btn-secondary-custom">
+                        Cancel
+                    </a>
+                </div>
+            }
+
+            <div style="background:var(--light);border-radius:12px;padding:20px;margin-top:24px;">
+                <h6 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:8px;">
+                    <i class="fa fa-info-circle me-2" style="color:var(--accent);"></i>
+                    Note
+                </h6>
+                <ul style="color:var(--muted);font-size:0.88rem;margin:0;padding-left:18px;">
+                    <li>Admin 24-48 hours mein reply karega</li>
+                    <li>Urgent issues ke liye "High" priority select karein</li>
+                    <li>Profile verification ke liye bhi yahan message bhej sakte hain</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function selectReason(reason) {
+            document.getElementById('selectedReason').value = reason;
+            ['Suggestion', 'Feedback', 'Complaint'].forEach(function (r) {
+                var card = document.getElementById('reason' + r);
+                if (card) {
+                    card.classList.toggle('selected', r === reason);
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,107 @@
+@using TuitionHub.Models
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Mere Tutors";
+    ViewData["Active"] = "MyTutors";
+
+    var rawList = ViewBag.MyTutors as List<TuitionHub.Models.User>;
+    var tutorList = rawList ?? new List<TuitionHub.Models.User>();
+}
+
+<div class="row g-4">
+    <div class="col-12">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <div>
+                <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin:0;">
+                    Mere Hired Tutors
+                </h4>
+                <p style="color:var(--muted);font-size:0.85rem;margin:0;">
+                    Jo tutors aapne hire kiye hain unki list
+                </p>
+            </div>
+            <a href="/Student/FindTutor" class="btn-primary-custom">
+                <i class="fa fa-search me-1"></i> Aur Tutors Dhundein
+            </a>
+        </div>
+    </div>
+
+    @if (tutorList.Count > 0)
+    {
+        for (int i = 0; i < tutorList.Count; i++)
+        {
+            var t = tutorList[i];
+            string tName = t.FullName ?? "";
+            string tSub = t.Subjects ?? "";
+            string tCity = t.City ?? "";
+            string tInit = t.Initials ?? "??";
+            string tColor = t.AvatarColor ?? "var(--accent)";
+            string tPhone = t.Phone ?? "";
+            string tEmail = t.Email ?? "";
+            int? tExp = t.Experience;
+
+            <div class="col-md-6 col-lg-4">
+                <div class="tutor-card">
+                    <div class="tutor-card-avatar"
+                         style="background:@tColor;">
+                        @tInit
+                    </div>
+                    <div class="tutor-card-name">@tName</div>
+                    <div class="tutor-card-sub">@tSub</div>
+                    <div class="tutor-card-exp">
+                        @(tExp.HasValue ? tExp.Value + " yrs" : "New")
+                        -
+                        @tCity
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <span class="badge-status badge-active"
+                              style="display:inline-flex;align-items:center;gap:4px;">
+                            <i class="fa fa-check-circle"></i> Hired
+                        </span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        @if (!string.IsNullOrEmpty(tPhone))
+                        {
+                            <a href="tel:@tPhone"
+                               class="btn-action btn-view"
+                               style="flex:1;text-align:center;">
+                                <i class="fa fa-phone me-1"></i> Call
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="btn-action btn-view"
+                                  style="flex:1;text-align:center;opacity:0.5;cursor:default;">
+                                <i class="fa fa-phone me-1"></i> Call
+                            </span>
+                        }
+                        <a href="mailto:@tEmail"
+                           class="btn-action btn-edit"
+                           style="flex:1;text-align:center;">
+                            <i class="fa fa-envelope me-1"></i> Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div style="text-align:center;padding:60px 20px;background:white;border-radius:16px;border:2px dashed var(--border);">
+                <i class="fa fa-search"
+                   style="font-size:3rem;color:var(--muted);margin-bottom:16px;display:block;"></i>
+                <h5 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:8px;">
+                    Abhi Koi Tutor Hire Nahi Kiya
+                </h5>
+                <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">
+                    Apna perfect tutor dhundein aur padhai shuru karein!
+                </p>
+                <a href="/Student/FindTutor"
+                   class="btn-primary-custom"
+                   style="display:inline-flex;">
+                    <i class="fa fa-search me-1"></i> Tutor Dhundein
+                </a>
+            </div>
+        </div>
+    }
+</div>

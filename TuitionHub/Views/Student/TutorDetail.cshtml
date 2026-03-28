@@ -1,0 +1,129 @@
+@* Save as: Views/Student/TutorDetail.cshtml *@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = ViewBag.Tutor?.FullName ?? "Tutor Profile";
+    ViewData["Page"] = "Tutors";
+    // var tutor = ViewBag.Tutor as TuitionHub.Models.User;
+}
+
+<section style="background:var(--light);padding:50px 0;">
+    <div class="container">
+        <div style="margin-bottom:20px;">
+            <a href="/Student/FindTutor" style="color:var(--muted);font-size:0.9rem;">← Sab Tutors</a>
+        </div>
+
+        <div class="row g-4">
+            @* Left: Profile Card *@
+            <div class="col-lg-4">
+                <div class="card-tuition" style="text-align:center;padding:0;overflow:hidden;position:sticky;top:80px;">
+                    <div style="background:linear-gradient(135deg,var(--primary),#0f3460);padding:36px 24px;">
+                        <div style="width:90px;height:90px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:white;margin:0 auto 16px;">
+                            @(ViewBag.Tutor?.Initials ?? "RS")
+                        </div>
+                        <h3 style="font-family:'Syne',sans-serif;color:white;margin-bottom:4px;">@(ViewBag.Tutor?.FullName ?? "Rahul Sharma")</h3>
+                        <p style="color:rgba(255,255,255,0.7);font-size:0.88rem;margin-bottom:12px;">@(ViewBag.Tutor?.Subjects ?? "Maths, Physics")</p>
+                        <div style="display:flex;justify-content:center;gap:16px;">
+                            <div>
+                                <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gold);">@(ViewBag.Tutor?.Rating?.ToString("0.0") ?? "4.9")</div>
+                                <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Rating</div>
+                            </div>
+                            <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+                            <div>
+                                <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:white;">@(ViewBag.Tutor?.Experience ?? 5)</div>
+                                <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);">Yrs Exp</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:24px;">
+                        <div style="display:flex;flex-direction:column;gap:12px;text-align:left;margin-bottom:20px;">
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <i class="fa fa-graduation-cap" style="color:var(--accent);width:18px;font-size:0.9rem;"></i>
+                                <span style="font-size:0.88rem;">@(ViewBag.Tutor?.Qualification ?? "B.Tech IIT Delhi")</span>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <i class="fa fa-map-marker-alt" style="color:var(--accent);width:18px;font-size:0.9rem;"></i>
+                                <span style="font-size:0.88rem;">@(ViewBag.Tutor?.City ?? "Delhi")</span>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <i class="fa fa-venus-mars" style="color:var(--accent);width:18px;font-size:0.9rem;"></i>
+                                <span style="font-size:0.88rem;">@(ViewBag.Tutor?.Gender ?? "Male")</span>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <i class="fa fa-check-circle" style="color:var(--success);width:18px;font-size:0.9rem;"></i>
+                                <span style="font-size:0.88rem;color:var(--success);font-weight:600;">Verified Tutor</span>
+                            </div>
+                        </div>
+
+                        @if (Session["UserId"] != null)
+                        {
+                            @using (Html.BeginForm("HireTutor", "Student", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="tutorId" value="@(ViewBag.Tutor?.Id ?? 0)">
+                                <button type="submit" class="btn-primary-custom w-100" style="justify-content:center;padding:14px;">
+                                    <i class="fa fa-handshake"></i> Hire Karein
+                                </button>
+                            }
+                        }
+                        else
+                        {
+                            <a href="/Account/Login" class="btn-primary-custom w-100" style="justify-content:center;padding:14px;display:flex;">
+                                <i class="fa fa-sign-in-alt"></i> Login to Hire
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @* Right: Details *@
+            <div class="col-lg-8">
+                <div class="card-tuition" style="padding:32px;margin-bottom:20px;">
+                    <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:16px;">About Me</h4>
+                    <p style="color:var(--muted);line-height:1.8;font-size:0.95rem;">
+                        @(ViewBag.Tutor?.Bio ?? "Main ek dedicated tutor hun jo students ko Maths aur Physics mein expert banana chahta hun. Mera approach practical hai — concepts samjhao, ratta nahi. IIT se B.Tech karne ke baad 5 saal se teaching kar raha hun. Mere students CBSE aur competitive exams mein achha perform karte hain.")
+                    </p>
+                </div>
+
+                <div class="card-tuition" style="padding:32px;margin-bottom:20px;">
+                    <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:16px;">Subjects & Specialization</h4>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                        @{
+                            var subs = (ViewBag.Tutor?.Subjects ?? "Maths,Physics,Algebra,Calculus,Mechanics").Split(',');
+                            foreach (var s in subs)
+                            {
+                                <span class="subject-tag" style="font-size:0.9rem;padding:6px 16px;">@s.Trim()</span>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div class="card-tuition" style="padding:32px;">
+                    <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:20px;">Student Reviews</h4>
+                    @{
+                        var reviews = new[] {
+                            new { Name="Arjun V.", Rating=5, Text="Bahut achhe tutor hain! Maths mein bahut improvement aayi.", Date="Dec 2024" },
+                            new { Name="Sneha P.", Rating=5, Text="Concept clear karne ka tarika bahut unique hai. Highly recommended!", Date="Nov 2024" },
+                            new { Name="Rohan M.", Rating=4, Text="Good teacher, patient hai. Schedule flexible nahi par padhai achhi hai.", Date="Oct 2024" },
+                        };
+                        foreach (var r in reviews)
+                        {
+                            <div style="border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:18px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div class="sidebar-avatar" style="width:34px;height:34px;font-size:0.75rem;">@r.Name.Substring(0,1)</div>
+                                        <strong style="font-size:0.9rem;">@r.Name</strong>
+                                    </div>
+                                    <div>
+                                        @for (int s = 0; s < r.Rating; s++) { <span style="color:var(--gold);">★</span> }
+                                        <span style="font-size:0.78rem;color:var(--muted);margin-left:6px;">@r.Date</span>
+                                    </div>
+                                </div>
+                                <p style="color:var(--muted);font-size:0.88rem;margin:0;">@r.Text</p>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,364 @@
+@*@using TuitionHub.Models
+    @{
+        Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+        ViewData["Title"] = "Students Manage";
+        ViewData["Active"] = "Students";
+
+        var rawList = ViewBag.Students as List<TuitionHub.Models.User>;
+        var studentList = rawList ?? new List<TuitionHub.Models.User>();
+    }
+
+    <div class="row g-4">
+        <div class="col-12">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                <div>
+                    <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin:0;">
+                        Students Management
+                    </h4>
+                    <p style="color:var(--muted);font-size:0.85rem;margin:0;">
+                        Sab registered students
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="filter-panel" style="padding:18px 24px;">
+                @using (Html.BeginForm("Students", "Admin", FormMethod.Get))
+                {
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label">Search</label>
+                            <input type="text" name="search" class="form-control"
+                                   placeholder="Naam ya email..."
+                                   value="@Request.QueryString["search"]">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">City</label>
+                            <input type="text" name="city" class="form-control"
+                                   placeholder="City..."
+                                   value="@Request.QueryString["city"]">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Class</label>
+                            <select name="cls" class="form-select">
+                                <option value="">Sab</option>
+                                @for (int i = 1; i <= 12; i++)
+                                {
+                                    <option value="@i">Class @i</option>
+                                }
+                                <option value="College">College</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="">Sab</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex gap-2">
+                            <button type="submit" class="btn-primary-custom"
+                                    style="flex:1;justify-content:center;">
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                            <a href="/Admin/Students"
+                               class="btn-secondary-custom"
+                               style="white-space:nowrap;">Reset</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="table-tuition">
+                <div class="table-header">
+                    <h6>
+                        Total Students:
+                        <span style="color:var(--accent);">@studentList.Count</span>
+                    </h6>
+                </div>
+
+                <div style="overflow-x:auto;">
+                    <table style="width:100%;min-width:1000px;">
+                        <thead>
+                            <tr>
+                                <th style="width:40px;">#</th>
+                                <th style="min-width:130px;">Name</th>
+                                <th style="min-width:170px;">Email</th>
+                                <th style="min-width:120px;">Phone</th>
+                                <th style="width:70px;">Class</th>
+                                <th style="width:90px;">Subject</th>
+                                <th style="width:90px;">City</th>
+                                <th style="width:80px;">Joined</th>
+                                <th style="width:80px;">Status</th>
+                                <th style="width:110px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (studentList.Count > 0)
+                            {
+                                for (int i = 0; i < studentList.Count; i++)
+                                {
+                                    var s = studentList[i];
+                                    <tr>
+                                        <td style="color:var(--muted);font-size:0.8rem;">
+                                            @(i+1)
+                                        </td>
+                                        <td>
+                                            <div style="display:flex;align-items:center;gap:8px;">
+                                                <div class="sidebar-avatar"
+                                                     style="width:30px;height:30px;font-size:0.7rem;flex-shrink:0;">
+                                                    @s.Initials
+                                                </div>
+                                                <strong style="font-size:0.85rem;">
+                                                    @s.FullName
+                                                </strong>
+                                            </div>
+                                        </td>
+                                        <td style="font-size:0.82rem;word-break:break-all;">
+                                            @s.Email
+                                        </td>
+                                        <td style="font-size:0.82rem;">
+                                            @s.Phone
+                                        </td>
+                                        <td style="font-size:0.85rem;">
+                                            @s.Class
+                                        </td>
+                                        <td>
+                                            <span class="subject-tag">@s.RequiredSubject</span>
+                                        </td>
+                                        <td style="font-size:0.85rem;">@s.City</td>
+                                        <td style="font-size:0.8rem;color:var(--muted);">
+                                            @s.JoinDate.ToString("dd/MM/yy")
+                                        </td>
+                                        <td>
+                                            <span class="badge-status @(s.IsActive ? "badge-active" : "badge-inactive")">
+                                                @(s.IsActive ? "Active" : "Inactive")
+                                            </span>
+                                        </td>
+                                        <td style="white-space:nowrap;">
+                                            <a href="/Admin/EditStudent/@s.Id"
+                                               class="btn-action btn-edit"
+                                               style="margin-right:4px;">
+                                                Edit
+                                            </a>
+                                            <a href="/Admin/DeleteStudent/@s.Id"
+                                               class="btn-action btn-delete"
+                                               onclick="return confirm('@s.FullName ko delete karein?')">
+                                                Del
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="10"
+                                        style="text-align:center;padding:30px;color:var(--muted);">
+                                        Koi student registered nahi hai abhi
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="padding:16px 20px;border-top:1px solid var(--border);">
+                    <span style="font-size:0.82rem;color:var(--muted);">
+                        Total: @studentList.Count students
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>*@
+@using TuitionHub.Models
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Students Manage";
+    ViewData["Active"] = "Students";
+
+    var rawList = ViewBag.Students as List<TuitionHub.Models.User>;
+    var studentList = rawList ?? new List<TuitionHub.Models.User>();
+}
+
+<div class="row g-4">
+    <div class="col-12">
+        <div>
+            <h4 style="font-family:'Syne',sans-serif;color:var(--primary);margin:0;">
+                Students Management
+            </h4>
+            <p style="color:var(--muted);font-size:0.85rem;margin:0;">
+                Sab registered students
+            </p>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="filter-panel" style="padding:16px 20px;">
+            @using (Html.BeginForm("Students", "Admin", FormMethod.Get))
+            {
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-3">
+                        <input type="text" name="search" class="form-control form-control-sm"
+                               placeholder="Naam ya email..."
+                               value="@Request.QueryString["search"]">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="city" class="form-control form-control-sm"
+                               placeholder="City..."
+                               value="@Request.QueryString["city"]">
+                    </div>
+                    <div class="col-md-2">
+                        <select name="cls" class="form-select form-select-sm">
+                            <option value="">Class: Sab</option>
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i">Class @i</option>
+                            }
+                            <option value="College">College</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="status" class="form-select form-select-sm">
+                            <option value="">Status: Sab</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn-primary-custom"
+                                style="flex:1;justify-content:center;padding:8px 12px;font-size:0.82rem;">
+                            <i class="fa fa-search"></i> Search
+                        </button>
+                        <a href="/Admin/Students"
+                           class="btn-secondary-custom"
+                           style="white-space:nowrap;padding:8px 12px;font-size:0.82rem;">
+                            Reset
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>
+                    Total Students:
+                    <span style="color:var(--accent);">@studentList.Count</span>
+                </h6>
+            </div>
+
+            <table style="width:100%;table-layout:fixed;">
+                <colgroup>
+                    <col style="width:35px;">
+                    <col style="width:130px;">
+                    <col style="width:150px;">
+                    <col style="width:105px;">
+                    <col style="width:60px;">
+                    <col style="width:80px;">
+                    <col style="width:75px;">
+                    <col style="width:72px;">
+                    <col style="width:65px;">
+                    <col style="width:90px;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>City</th>
+                        <th>Joined</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (studentList.Count > 0)
+                    {
+                        for (int i = 0; i < studentList.Count; i++)
+                        {
+                            var s = studentList[i];
+                            <tr>
+                                <td style="font-size:0.78rem;color:var(--muted);">
+                                    @(i+1)
+                                </td>
+                                <td>
+                                    <div style="display:flex;align-items:center;gap:6px;overflow:hidden;">
+                                        <div class="sidebar-avatar"
+                                             style="width:26px;height:26px;font-size:0.65rem;flex-shrink:0;">
+                                            @s.Initials
+                                        </div>
+                                        <strong style="font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                            @s.FullName
+                                        </strong>
+                                    </div>
+                                </td>
+                                <td style="font-size:0.78rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                                    title="@s.Email">
+                                    @s.Email
+                                </td>
+                                <td style="font-size:0.78rem;">@s.Phone</td>
+                                <td style="font-size:0.8rem;text-align:center;">@s.Class</td>
+                                <td>
+                                    <span class="subject-tag"
+                                          style="font-size:0.72rem;padding:2px 8px;">
+                                        @s.RequiredSubject
+                                    </span>
+                                </td>
+                                <td style="font-size:0.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                    @s.City
+                                </td>
+                                <td style="font-size:0.76rem;color:var(--muted);">
+                                    @s.JoinDate.ToString("dd/MM/yy")
+                                </td>
+                                <td>
+                                    <span class="badge-status @(s.IsActive ? "badge-active" : "badge-inactive")"
+                                          style="font-size:0.7rem;padding:3px 8px;">
+                                        @(s.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/Admin/EditStudent/@s.Id"
+                                       class="btn-action btn-edit"
+                                       style="padding:4px 8px;font-size:0.75rem;margin-right:3px;">
+                                        Edit
+                                    </a>
+                                    <a href="/Admin/DeleteStudent/@s.Id"
+                                       class="btn-action btn-delete"
+                                       style="padding:4px 8px;font-size:0.75rem;"
+                                       onclick="return confirm('@s.FullName ko delete karein?')">
+                                        Del
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10"
+                                style="text-align:center;padding:30px;color:var(--muted);">
+                                Koi student registered nahi hai abhi
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div style="padding:14px 20px;border-top:1px solid var(--border);">
+                <span style="font-size:0.82rem;color:var(--muted);">
+                    Total: @studentList.Count students
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

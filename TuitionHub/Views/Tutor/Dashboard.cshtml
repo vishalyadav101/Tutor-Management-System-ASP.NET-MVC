@@ -1,0 +1,153 @@
+﻿@using TuitionHub.Models
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Tutor Dashboard";
+    ViewData["Active"] = "Dashboard";
+
+    var db = new TuitionHub.Models.TuitionDbContext();
+    int userId = Session["UserId"] != null ? (int)Session["UserId"] : 0;
+
+    int totalStudents = db.HireRequests.Count(h => h.TutorId == userId);
+    int newRequests = db.HireRequests.Count(h => h.TutorId == userId &&
+                                                    h.Status == "Pending");
+
+    var recentStudents = db.HireRequests
+                           .Where(h => h.TutorId == userId)
+                           .Select(h => h.Student)
+                           .Take(5)
+                           .ToList();
+}
+
+<div style="margin-bottom:28px;">
+    <h3 style="font-family:'Syne',sans-serif;color:var(--primary);margin-bottom:4px;">
+        Namaste, @Session["Username"]!
+    </h3>
+    <p style="color:var(--muted);font-size:0.9rem;">
+        Aapka tutor dashboard — students aur opportunities ek jagah.
+    </p>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon"
+                 style="background:rgba(233,69,96,0.1);color:var(--accent);">
+                <i class="fa fa-user-graduate"></i>
+            </div>
+            <div>
+                <div class="stat-num">@totalStudents</div>
+                <div class="stat-label">Mere Students</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon"
+                 style="background:rgba(52,152,219,0.1);color:#3498db;">
+                <i class="fa fa-inbox"></i>
+            </div>
+            <div>
+                <div class="stat-num">@newRequests</div>
+                <div class="stat-label">New Requests</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon"
+                 style="background:rgba(46,204,113,0.1);color:#27ae60;">
+                <i class="fa fa-check-circle"></i>
+            </div>
+            <div>
+                <div class="stat-num"
+                     style="font-size:1.1rem;">
+                    Verified
+                </div>
+                <div class="stat-label">Profile Status</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="stat-card">
+            <div class="stat-icon"
+                 style="background:rgba(245,166,35,0.12);color:var(--gold);">
+                <i class="fa fa-star"></i>
+            </div>
+            <div>
+                <div class="stat-num"
+                     style="font-size:1.1rem;">
+                    Active
+                </div>
+                <div class="stat-label">Account</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="table-tuition">
+            <div class="table-header"><h6>Quick Actions</h6></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:10px;">
+                <a href="/Tutor/Students" class="btn-primary-custom">
+                    <i class="fa fa-users me-2"></i> Students Dekhein
+                </a>
+                <a href="/Tutor/Profile" class="btn-secondary-custom">
+                    <i class="fa fa-user-edit me-2"></i> Profile Update
+                </a>
+                <a href="/Tutor/Contact" class="btn-secondary-custom">
+                    <i class="fa fa-envelope me-2"></i> Admin Contact
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="table-tuition">
+            <div class="table-header">
+                <h6>Recent Student Requests</h6>
+                <a href="/Tutor/Students" class="btn-action btn-view">
+                    Sab Dekhein
+                </a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>City</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (recentStudents.Count > 0)
+                    {
+                        for (int i = 0; i < recentStudents.Count; i++)
+                        {
+                            var s = recentStudents[i];
+                            <tr>
+                                <td><strong>@s.FullName</strong></td>
+                                <td>@s.Class</td>
+                                <td>@s.RequiredSubject</td>
+                                <td>@s.City</td>
+                                <td>
+                                    <span class="badge-status badge-new">New</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5"
+                                style="text-align:center;padding:24px;color:var(--muted);">
+                                Abhi koi student request nahi hai
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
